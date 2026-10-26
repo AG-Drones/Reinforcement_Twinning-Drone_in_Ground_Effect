@@ -1,0 +1,12 @@
+{
+  "iteration": 17,
+  "trajectory_number": 10,
+  "mission_phase": "rt",
+  "mission_design": "rt_calibration",
+  "control_mode": "RG",
+  "horizontal_velocity": 0.35,
+  "height_in_rotor_radii": 1.5,
+  "identification_iteration": "iteration_006",
+  "experiment_iteration": "iteration_017",
+  "policy_file": "mission_output/next_GE_mission_RG_rt_calibration_10.npz"
+}

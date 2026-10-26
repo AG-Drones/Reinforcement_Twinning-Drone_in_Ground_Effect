@@ -1,0 +1,652 @@
+{
+  "E00": {
+    "included_cases": [
+      [
+        19,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        19,
+        1
+      ]
+    ],
+    "dataset_boundary": null,
+    "initial_coefficients": [
+      0.0625,
+      2.0
+    ],
+    "GE_coeffs": [
+      0.10360682184078121,
+      1.335788053885187
+    ],
+    "final_loss": 0.005979170755231678,
+    "iterations": 1109,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E01": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        19,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        1,
+        1
+      ]
+    ],
+    "dataset_boundary": null,
+    "initial_coefficients": [
+      0.10360682184078121,
+      1.335788053885187
+    ],
+    "GE_coeffs": [
+      0.16745455380628474,
+      2.2961487397148486
+    ],
+    "final_loss": 0.05773735599850981,
+    "iterations": 693,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E02": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        19,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        1,
+        2
+      ]
+    ],
+    "dataset_boundary": null,
+    "initial_coefficients": [
+      0.16745455380628474,
+      2.2961487397148486
+    ],
+    "GE_coeffs": [
+      0.17178111380545424,
+      2.322102777139542
+    ],
+    "final_loss": 0.04553418227882806,
+    "iterations": 100,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E03": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        19,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        1,
+        3
+      ]
+    ],
+    "dataset_boundary": "D1",
+    "initial_coefficients": [
+      0.17178111380545424,
+      2.322102777139542
+    ],
+    "GE_coeffs": [
+      0.18130533814311436,
+      2.542310213316316
+    ],
+    "final_loss": 0.04309525029087645,
+    "iterations": 143,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E04": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        19,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        2,
+        1
+      ]
+    ],
+    "dataset_boundary": null,
+    "initial_coefficients": [
+      0.18130533814311436,
+      2.542310213316316
+    ],
+    "GE_coeffs": [
+      0.18524372585905455,
+      2.5944078333564145
+    ],
+    "final_loss": 0.03791001655696104,
+    "iterations": 100,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E05": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        19,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        2,
+        2
+      ]
+    ],
+    "dataset_boundary": null,
+    "initial_coefficients": [
+      0.18524372585905455,
+      2.5944078333564145
+    ],
+    "GE_coeffs": [
+      0.2003358777181815,
+      2.760875232068528
+    ],
+    "final_loss": 0.03896219598075226,
+    "iterations": 126,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E06": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        19,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        2,
+        3
+      ]
+    ],
+    "dataset_boundary": "D2",
+    "initial_coefficients": [
+      0.2003358777181815,
+      2.760875232068528
+    ],
+    "GE_coeffs": [
+      0.21762114544163028,
+      2.7918000029609877
+    ],
+    "final_loss": 0.03573628107451628,
+    "iterations": 106,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E07": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        19,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        4,
+        1
+      ]
+    ],
+    "dataset_boundary": null,
+    "initial_coefficients": [
+      0.21762114544163028,
+      2.7918000029609877
+    ],
+    "GE_coeffs": [
+      0.165095994744093,
+      2.467945319808252
+    ],
+    "final_loss": 0.036640032524677804,
+    "iterations": 157,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E08": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        19,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        4,
+        2
+      ]
+    ],
+    "dataset_boundary": null,
+    "initial_coefficients": [
+      0.165095994744093,
+      2.467945319808252
+    ],
+    "GE_coeffs": [
+      0.1657906606733214,
+      2.426627920840994
+    ],
+    "final_loss": 0.03458012393380683,
+    "iterations": 100,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E09": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        19,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        4,
+        3
+      ]
+    ],
+    "dataset_boundary": "D3",
+    "initial_coefficients": [
+      0.1657906606733214,
+      2.426627920840994
+    ],
+    "GE_coeffs": [
+      0.13141429628176202,
+      2.1220480712839755
+    ],
+    "final_loss": 0.03812507784830886,
+    "iterations": 139,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E10": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        19,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        5,
+        3
+      ]
+    ],
+    "dataset_boundary": null,
+    "initial_coefficients": [
+      0.13141429628176202,
+      2.1220480712839755
+    ],
+    "GE_coeffs": [
+      0.11655562809725714,
+      1.9474677543171734
+    ],
+    "final_loss": 0.039080813518346226,
+    "iterations": 118,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E11": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        19,
+        1
+      ],
+      [
+        27,
+        1
+      ]
+    ],
+    "added_cases": [
+      [
+        27,
+        1
+      ]
+    ],
+    "dataset_boundary": null,
+    "initial_coefficients": [
+      0.11655562809725714,
+      1.9474677543171734
+    ],
+    "GE_coeffs": [
+      0.11946886584511562,
+      1.9684447746496034
+    ],
+    "final_loss": 0.036863052025024684,
+    "iterations": 100,
+    "stopping_reason": "automatic_windowed_convergence"
+  },
+  "E12": {
+    "included_cases": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        19,
+        1
+      ],
+      [
+        27,
+        1
+      ],
+      [
+        27,
+        2
+      ]
+    ],
+    "added_cases": [
+      [
+        27,
+        2
+      ]
+    ],
+    "dataset_boundary": "D4",
+    "initial_coefficients": [
+      0.11946886584511562,
+      1.9684447746496034
+    ],
+    "GE_coeffs": [
+      0.12100233094091309,
+      1.9804164310571546
+    ],
+    "final_loss": 0.034652953850430795,
+    "iterations": 100,
+    "stopping_reason": "automatic_windowed_convergence"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "iteration": 20,
+  "trajectory_number": null,
+  "mission_phase": "rt",
+  "mission_design": "rt",
+  "control_mode": "RG",
+  "horizontal_velocity": 0.35,
+  "height_in_rotor_radii": 1.5,
+  "identification_iteration": "iteration_006",
+  "experiment_iteration": "iteration_020",
+  "policy_file": "mission_output/next_GE_mission_RG_performance.npz"
+}

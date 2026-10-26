@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+.jax_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Regenerable local outputs
+paper/cache/
+rt_replay_output/
+mission_output/
+identification_output/**/history/
+paper/references/
+paper/figures/*.png
+!paper/figures/Real_comparison.png
+
+# IDE and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

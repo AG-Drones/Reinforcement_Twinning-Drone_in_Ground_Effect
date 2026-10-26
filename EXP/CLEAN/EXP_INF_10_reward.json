@@ -1,0 +1,22 @@
+{
+  "reward_version": "vertical_tracking_v1",
+  "settings": {
+    "rms_weight": 1.0,
+    "post_obstacle_weight": 1.0,
+    "peak_weight": 0.25,
+    "numerical_floor": 1e-12,
+    "version": "vertical_tracking_v1",
+    "obstacle_start_m": 2.2,
+    "obstacle_end_m": 3.0100000000000002,
+    "scored_end_m": 4.0,
+    "rotor_radius_m": 0.023
+  },
+  "repetition_rewards": [
+    -5.208644341479659,
+    -4.424915963721356,
+    -4.084774241908317
+  ],
+  "mean_experimental_reward": -4.5727781823697775,
+  "standard_deviation": 0.47058008666988155,
+  "number_of_repetitions": 3
+}

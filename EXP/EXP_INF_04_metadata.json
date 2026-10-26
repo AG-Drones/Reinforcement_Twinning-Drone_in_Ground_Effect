@@ -1,0 +1,10 @@
+{
+  "iteration": 2,
+  "trajectory_number": 1,
+  "mission_phase": "informative",
+  "control_mode": "RG",
+  "horizontal_velocity": 0.35,
+  "height_in_rotor_radii": 1.5,
+  "identification_iteration": "iteration_002",
+  "policy_file": "mission_output/next_GE_mission_RG_1.npz"
+}

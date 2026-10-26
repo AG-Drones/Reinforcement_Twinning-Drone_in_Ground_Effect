@@ -1,0 +1,16 @@
+{
+  "paper_case": "INF_12",
+  "legacy_iteration": 27,
+  "legacy_trajectory_number": 2,
+  "mission_phase": "legacy_near_wall_identification",
+  "control_mode": "RG",
+  "horizontal_velocity": 0.45,
+  "height_in_rotor_radii": 1.0,
+  "source_campaign": "GE_rg_a",
+  "source_case": "EXP_0p45ms_1R_clean_RG_It4.txt",
+  "source_policy": "EXP_0p45ms_1R_RG_input_It4.txt",
+  "number_of_repetitions": 3,
+  "raw_repetitions_available": false,
+  "rms_assumed_zero": true,
+  "import_note": "Imported from the legacy campaign. Individual raw repetitions are unavailable in this repository; the RMS file is therefore set to zero. The CLEAN columns remain compatible with adjoint_identification.py."
+}
