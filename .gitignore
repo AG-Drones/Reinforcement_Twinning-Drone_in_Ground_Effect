@@ -9,7 +9,8 @@ paper/cache/
 rt_replay_output/
 mission_output/
 identification_output/**/history/
-paper/references/
+paper/references/*
+!paper/references/*.pdf
 paper/figures/*.png
 !paper/figures/Real_comparison.png
 
