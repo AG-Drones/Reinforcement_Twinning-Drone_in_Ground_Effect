@@ -63,88 +63,75 @@ The campaign first uses information-oriented policies to identify these paramete
 
 The remainder of the paper is organized as follows. Section~\ref{sec:methodology} introduces the RT workflow, the physical environment and DT, and the information and performance phases. Section~\ref{sec:results} presents and discusses the experimental campaign following the phases defined in the methodology. Section~\ref{sec:conclusion} summarizes the main findings and limitations.
 
-\section{Methodology}\label{sec:methodology}
-
-
-\subsection{Reinforcement Twinning Framework}
+\section{Reinforcement Twinning Methodology}
+\label{sec:methodology}
 \label{sec:rt-framework}
 
-Reinforcement Twinning (RT) couples the evolution of a physical environment with that of an active, physics-based Digital Twin (DT)~\cite{SchenaRT2023,Mendez2026}. The two environments evolve side by side and pursue complementary objectives. The physical environment has a performance objective related to the policy parameters to be optimized, whereas the DT must improve the physical model that predicts the response of the physical environment. Experience from the physical environment is therefore used both as evidence to update the DT and as feedback on the policies designed with that DT. Conversely, the DT not only adapts from observations but also proposes the next experiments and control policies from which new observations are generated.
+Reinforcement Twinning (RT) couples a physical environment (EXP) with an active, physics-based Digital Twin (DT)~\cite{SchenaRT2023,Mendez2026}. The two environments evolve side by side and pursue complementary objectives. The EXP has a performance objective, achieved through the optimization of control policy parameters, whereas the DT must improve its physical model to predict the response of the EXP and propose improved control policies. Experience from the EXP is therefore used both as evidence to update the DT and as feedback on the policies designed with that DT. In turn, the DT adapts from these observations and proposes the next mission to be deployed on the EXP from which new observations are generated. This exchange allows model identification and performance improvement to support each other, while of the exploration and optimization takes place virtually before a selected policy is experimentally deployed, supporting safer and more efficient framework.
 
-\paragraph*{The two environments and their objective}
-The physical environment is denoted by a filled circle $(\bullet)$ and the DT by an empty circle $(\circ)$, following the black- and white-box symbology, respectively. A physical interaction is indexed by $n$, while $k$ denotes the time step within that interaction. The hidden physical state $\mathbf s_{\bullet,k}^{(n)}$ evolves according to
+\subsection{Environments, observations and objectives}
+The EXP and the DT are denoted by a filled circle $(\bullet)$ and an empty circle $(\circ)$, respectively, following the notation of Mendez et al.~\cite{Mendez2026}. During an episode $n$ carried out on the EXP, its state at the timestep $k$ is represented by $\mathbf s_{\bullet,k}^{(n)}$. Its evolution to the following timestep is described by
 \begin{equation}
-\mathbf s_{\bullet,k+1}^{(n)}=
-\mathbf f_{\bullet}\!\left(
-\mathbf s_{\bullet,k}^{(n)},
-\mathbf u_{\bullet,k}^{(n)},
-\mathbf d_k^{(n)}
-\right),
-\label{eq:rt-physical-state}
+ \mathbf s_{\bullet,k+1}^{(n)}
+ =\mathbf F_\bullet\!\left(\mathbf s_{\bullet,k}^{(n)},
+ \mathbf a_{\bullet,k}^{(n)},\mathbf z_k^{(n)}\right),
+ \label{eq:rt-physical-state}
 \end{equation}
-where $\mathbf u_{\bullet,k}^{(n)}$ is the command generated under the deployed policy and $\mathbf d_k^{(n)}$ collects exogenous variables and disturbances that are not chosen by the policy. These may include environmental loads, variations of the available actuation, imperfect initial conditions, or disturbances in the measurement chain. The state is not assumed to be directly available as in a black-box framework. What enters the RT loop is the noisy observation
-\begin{equation}
-\mathbf o_{\bullet,k}^{(n)}=
-\mathbf h_{\bullet}\!\left(\mathbf s_{\bullet,k}^{(n)}\right)
-+\boldsymbol{\nu}_{k}^{(n)},
-\label{eq:rt-physical-observation}
-\end{equation}
-with $\boldsymbol{\nu}_{k}^{(n)}$ representing measurement noise and unmodeled observation errors. The complete experimental record also contains the deployed policy, the applied inputs, the relevant operating conditions, and the physical reward $\mathcal R_{\bullet}^{(n)}$.
+where the unknown dynamics are represented by $\mathbf F_\bullet$, the applied actions by $\mathbf a_\bullet$, and the exogenous input by $\mathbf z$. The latter includes disturbances and other inputs that are not selected by the policy. For readability, the superscript $n$ is omitted below when referring to quantities within a single episode.
 
-The DT reproduces the same state evolution with a parameterized transition model,
+In general, $\mathbf s_{\bullet}$ is only partially accessible through measurements. The available observation is denoted by $\mathbf o_{\bullet,k}$ and is expressed as
 \begin{equation}
-\mathbf s_{\circ,k+1}^{(n)}=
-\mathbf f_{\circ}\!\left(
-\mathbf s_{\circ,k}^{(n)},
-\mathbf u_{\circ,k}^{(n)},
-\mathbf d_k^{(n)};
-\boldsymbol{\theta}_{p}^{(m)}
-\right),
-\label{eq:rt-digital-state}
+ \mathbf o_{\bullet,k}
+ =\mathbf h(\mathbf s_{\bullet,k},\mathbf a_{\bullet,k-1})
+ +\boldsymbol{\varepsilon}_{\bullet,k},
+ \label{eq:rt-physical-observation}
 \end{equation}
-and generates the corresponding DT observation
-\begin{equation}
-\mathbf o_{\circ,k}^{(n)}=
-\mathbf h_{\circ}\!\left(
-\mathbf s_{\circ,k}^{(n)};
-\boldsymbol{\theta}_{p}^{(m)}
-\right),
-\label{eq:rt-digital-observation}
-\end{equation}
-where the vector $\boldsymbol{\theta}_{p}^{(m)}$ contains the unknown or uncertain model parameters to be identified and $m$ counts their updates. Every physical episode increments $n$, whereas $m$ advances only when model identification is active; therefore, $m \le n$. During factual replay, the DT receives the recorded policy, exogenous inputs, operating condition, and a reconstructed initial state. The mismatch between $\mathbf o_{\circ}$ and $\mathbf o_{\bullet}$
-then measures how much of the physical response is not explained by the current twin. During virtual evaluation, the same DT predicts the outcome of policies that have not yet been tested physically.
+where the measured quantities are selected through $\mathbf h$. Measurement error is represented by $\boldsymbol{\varepsilon}_{\bullet,k}$. The previous action is included to accommodate measurements associated with actuation, while keeping the observation available before the current action is selected.
 
-As anticipated, each of the two environments involved in the Reinforcement Twinning loop features its own objective. The physical environment aims for policy parameters $\boldsymbol{\theta}_{\pi}$ in the domain $\Theta_{\pi}$ that maximize the expected physical reward,
+The objective within the EXP is to improve control performance through the optimization of a policy $\pi_\bullet(\cdot\mid\boldsymbol{\theta}_\pi)$, where $\boldsymbol{\theta}_\pi$ are policy parameters selected to maximize the expected physical return $\mathcal R_\bullet$:
 \begin{equation}
-\boldsymbol{\theta}_{\pi}^{\star}
-=\arg\max_{\boldsymbol{\theta}_{\pi}\in\Theta_{\pi}}
-\mathrm{E}\!\left[\mathcal R_{\bullet}
-(\boldsymbol{\theta}_{\pi})\right],
-\label{eq:rt-physical-objective}
+ \boldsymbol{\theta}_\pi^\star
+ =\arg\max_{\boldsymbol{\theta}_\pi\in\Theta_\pi}
+ \mathrm E[\mathcal R_\bullet(\boldsymbol{\theta}_\pi)],
+ \label{eq:rt-physical-objective}
 \end{equation}
-whereas the digital twin searches for model parameters $\boldsymbol{\theta}_{p}$  in the domain $\Theta_{p}$ that make factual replay consistent with the accumulated observations,
-\begin{equation}
-\widehat{\boldsymbol{\theta}}_{p}^{(m+1)}
-=\arg\min_{\boldsymbol{\theta}_{p}\in\Theta_p}
-\mathcal L_p\!\left(
-\mathcal B_n;\boldsymbol{\theta}_{p}
-\right),
-\label{eq:rt-model-objective}
-\end{equation}
-where $\mathcal B_n=\{\mathcal E^{(1)},\ldots,\mathcal E^{(n)}\}$ is the replay buffer of physical episode records
-$
-\mathcal{E}^{(n)} = \left\{
-\boldsymbol{o}_{\bullet}^{(n)},
-\boldsymbol{\theta}_{\pi}^{(n)},
-e_n,
-\mathbf d^{(n)},
-\mathcal{R}_{\bullet}^{(n)}
-\right\}$,
-and $\mathcal{L}_p$ compares the DT and physical observations selected for identification. Equations~\eqref{eq:rt-physical-objective} and~\eqref{eq:rt-model-objective} are coupled: the model determines which policies appear promising or informative, while the resulting physical records determine how the model and the policy search evolve.
+where the admissible $\boldsymbol{\theta}_\pi$ domain is denoted by $\Theta_\pi$. The optimal parameters are denoted by $\boldsymbol{\theta}_\pi^\star$ and define the optimal policy $\pi_\bullet^\star=\pi_\bullet(\cdot\mid\boldsymbol{\theta}_\pi^\star)$. Performance is assessed through the physical return $\mathcal R_\bullet$, and the expectation is taken over variations in initial conditions, exogenous inputs, and measurement error.
 
-\paragraph*{Policies and interaction schedule}
-The interaction between the two environments is mediated by control policies that are designed within the DT and subsequently deployed in the physical environment. Policy design is therefore performed virtually: candidate interactions can be evaluated and optimized before the selected policy is transferred to the physical environment. The resulting physical episode then provides the experimental evidence required by the learning process. Depending on the current objective, the DT designs either an information-oriented or a performance-oriented policy. The information-oriented policy $\pi_{\iota}(\cdot\mid\boldsymbol{\theta}_{\iota})$, with $\boldsymbol{\theta}_{\iota}\in\Theta_{\iota}$, is designed to generate observations that are informative about the model parameters $\boldsymbol{\theta}_{p}$. Conversely, the performance-oriented policy $\pi_{\bullet}(\cdot\mid\boldsymbol{\theta}_{\pi})$, with $\boldsymbol{\theta}_{\pi}\in\Theta_{\pi}$, is designed using the current DT to maximize the expected physical reward. The two policy families may have significantly different parameterizations because their classification reflects the objective used during policy design. However, the data generated by each physical episode can still support both learning objectives. A performance-oriented policy may excite dynamics that improve the model-parameter estimate, while an information-oriented policy also yields a physical reward that supports subsequent performance-oriented policy design.
-A binary interaction schedule $e_n\in\{0,1\}$ determines which policy is designed and deployed during each physical episode $n$:
+The corresponding state in the DT is denoted by $\mathbf s_{\circ,k}$ and is propagated through
+\begin{equation}
+ \mathbf s_{\circ,k+1}
+ =\mathbf F_\circ(\mathbf s_{\circ,k},\mathbf a_{\circ,k},
+                 \widehat{\mathbf z}_k;\boldsymbol{\theta}_p^{(m)}),
+ \label{eq:rt-digital-state}
+\end{equation}
+where the dynamics are approximated by $\mathbf F_\circ$ and the recorded or estimated exogenous input is denoted by $\widehat{\mathbf z}$. The uncertain or unknown model parameters of the DT are collected in $\boldsymbol{\theta}_p^{(m)}$, with $m$ indexing accepted model updates. This index is distinct from the episode index $n$, since $\boldsymbol{\theta}_p$ need not be updated after every episode. A fixed structure is retained for $\mathbf F_\circ$ and only $\boldsymbol{\theta}_p$ are updated to reach a closer agreement between the physical and virtual environments.
+
+The predicted observation is obtained from the simulated state as
+\begin{equation}
+ \overline{\mathbf o}_{\circ,k}
+ =\mathbf h(\mathbf s_{\circ,k},\mathbf a_{\circ,k-1};
+            \boldsymbol{\theta}_p^{(m)}).
+ \label{eq:rt-digital-observation}
+\end{equation}
+The overbar denotes a prediction without added measurement noise. This prediction is compared directly with $\mathbf o_\bullet$ during identification.
+
+The objective of the DT is to improve its agreement with $\mathbf o_\bullet$ through the identification of $\boldsymbol{\theta}_p$. To support effective identification, dedicated policies $\pi_\iota(\cdot\mid\boldsymbol{\theta}_\iota)$ are designed, whose parameters $\boldsymbol{\theta}_\iota$ are selected to explore conditions informative about $\boldsymbol{\theta}_p$, instead of maximizing control performance through Eq.~\eqref{eq:rt-physical-objective}. The estimate of $\boldsymbol{\theta}_p$ is then updated from the accumulated physical records according to
+\begin{equation}
+\boldsymbol{\theta}_p^{(m+1)}
+ =\arg\min_{\boldsymbol{\theta}_p\in\Theta_p}
+ J_p(\boldsymbol{\theta}_p\mid\mathcal B_n).
+ \label{eq:rt-model-objective}
+\end{equation}
+The admissible $\boldsymbol{\theta}_p$ domain is denoted by $\Theta_p$, and the discrepancy between recorded and replayed quantities is measured by the identification loss $J_p$. All available episode records are collected in the replay buffer $\mathcal B_n=\{\mathcal E^{(1)},\ldots,\mathcal E^{(n)}\}$. Each $\mathcal E^{(n)}$ contains the observations, deployed policy, actions, available exogenous inputs, operating conditions, and evaluated return. Through the choice of residuals and weights in $J_p$, the identification is directed towards the quantities relevant to the application. Any discrepancy left by the assumed structure of $\mathbf F_\circ$ must subsequently be accounted for during policy search.
+
+\subsection{Policy representation and episode schedule}
+The interaction between the two environments is mediated by control policies that are designed within the DT and subsequently deployed in the EXP. Policy design is therefore performed virtually: candidate episodes can be evaluated and optimized before the selected policy is transferred to the EXP. The resulting physical episode then provides the experimental evidence required by the learning process. Depending on the current objective, either an information-oriented or a performance-oriented policy is designed in the DT.
+
+The information-oriented policy $\pi_{\iota}(\cdot\mid\boldsymbol{\theta}_{\iota})$, with $\boldsymbol{\theta}_{\iota}\in\Theta_{\iota}$, is designed to generate observations that are informative about $\boldsymbol{\theta}_{p}$. Conversely, the performance-oriented policy $\pi_{\bullet}(\cdot\mid\boldsymbol{\theta}_{\pi})$, with $\boldsymbol{\theta}_{\pi}\in\Theta_{\pi}$, is designed using the current DT to maximize the expected physical return $\mathcal R_\bullet$. The two policy families may have significantly different parameterizations because their classification reflects the objective used during policy design. In the general framework, data generated by either policy family can support both objectives. A performance-oriented policy may excite dynamics that improve the estimate of $\boldsymbol{\theta}_p$, and useful performance information may also be obtained from an information-oriented episode. In the campaign adopted here, the return transfer surrogate is calibrated using only performance-oriented policies; the purely information-oriented episodes are excluded from this calibration.
+
+In the present work, both policy families are implemented by modifying the position reference $\mathbf{x}^{\ast}=[x_x^{\ast},x_y^{\ast},x_z^{\ast}]^{\mathsf T}$ supplied to a baseline feedback controller. According to the current objective, the reference is parameterized by $\boldsymbol{\theta}_{\iota}$ or $\boldsymbol{\theta}_{\pi}$ and optimized in the DT before deployment. The baseline feedback controller and its gains are retained to generate the actions during execution. For performance-oriented design, this commanded reference may differ from the nominal task trajectory: performance is always assessed against the unchanged nominal target. Before each episode, consistent initial conditions are established in both environments, including the internal state of the baseline feedback controller.
+
+A binary episode schedule $e_n\in\{0,1\}$ determines which policy is designed and deployed during each episode $n$:
 \begin{equation}
 \pi_{\bullet}^{(n)}=
 \begin{cases}
@@ -153,96 +140,116 @@ A binary interaction schedule $e_n\in\{0,1\}$ determines which policy is designe
 \pi_{\bullet}\!\left(\cdot\mid\boldsymbol{\theta}_{\pi}^{(n)}\right),
 & e_n=0,\quad \text{performance-oriented}.
 \end{cases}
-\label{eq:rt-policy-schedule}\end{equation}
-
-In the general RT formulation, these two types of interaction are freely alternated during the campaign as the twin and policy evolve. For simplicity, the present work adopts a sequential schedule: all information-oriented missions are performed first until the  model satisfies the adopted identification and convergence requirements. The model parameters are then frozen and the campaign proceeds with performance-oriented missions. We consequently distinguish a first \emph{information phase} and a subsequent separated \emph{performance phase}, which are described in detail below.
-
-\paragraph*{Information phase}
-In the information phase, $\boldsymbol{\theta}_{p}$ is iteratively updated using the accumulated experimental data, after which the updated DT designs the next information-oriented policy. Given the current replay buffer, Eq.~\eqref{eq:rt-model-objective} is solved until the model update has converged. The updated DT then generates a set of admissible candidate interactions within the information-oriented policy domain. Each candidate represents a possible next experiment and is evaluated in the DT before deployment. The DT predictions along these interactions are differentiated with respect to $\boldsymbol{\theta}_p$. As $\mathbf S(\boldsymbol{\theta}_{\iota})=\partial\mathbf o_{\circ}/\partial\boldsymbol{\theta}_p$ denotes the sensitivity of the predicted observations and $\boldsymbol{\Sigma}_{\nu}$ their noise covariance, the information expected after a candidate policy is
-\begin{equation}
-\mathbf F_{n+1}(\boldsymbol{\theta}_{\iota})
-=
-\mathbf F_n+
-\mathbf S^{\top}(\boldsymbol{\theta}_{\iota})
-\boldsymbol{\Sigma}_{\nu}^{-1}
-\mathbf S(\boldsymbol{\theta}_{\iota}),
-\label{eq:rt-fisher-update}
+\label{eq:rt-policy-schedule}
 \end{equation}
-where $\mathbf F_n$ is the Fisher information accumulated from the experiments already stored in $\mathcal B_n$. The policy deployed in episode $n+1$ is selected with an E-optimal criterion,
-\begin{equation}
-\boldsymbol{\theta}_{\iota}^{(n+1)}
-=
-\arg\max_{\boldsymbol{\theta}_{\iota}\in\Theta_{\iota,\mathrm{safe}}}
-\lambda_{\min}\!\left[
-\mathbf F_{n+1}(\boldsymbol{\theta}_{\iota})
-\right].
-\label{eq:rt-e-optimal}
-\end{equation}
-Maximizing the smallest eigenvalue targets the least-observed joint parameter direction, so the E-optimal criterion already favors novelty in the information collected. The admissible set $\Theta_{\iota,\mathrm{safe}}$ is obtained through virtual rollouts and may enforce state, input, rate, and clearance constraints. This selection may be complemented by an explicit novelty criterion that compares each candidate with the existing dataset. It allows a mission with a slightly lower predicted information content to be selected when its response is sufficiently different from the experiments already available.
 
-The selected policy is deployed in the physical environment, its record is appended to $\mathcal B_n$, and the model is identified again from the enlarged dataset. Two convergence levels are distinguished. Each parameter update is complete only when the identification loss, the model parameters, and the projected gradient remain within prescribed tolerances over a monitoring window. The information phase is terminated when the converged parameter estimates remain stable after adding new interactions and the magnitude of their estimated correlation no longer decreases appreciably. At this point, further experiments yield only marginal changes in the identified model and in the joint identifiability of its parameters.
+In the general RT formulation of Mendez et al.~\cite{Mendez2026}, these two types of episode may be alternated during the campaign as the DT and policy evolve. For simplicity, a sequential schedule is adopted here: information-oriented missions are performed first until the adopted identification and convergence requirements are satisfied. The identified $\boldsymbol{\theta}_p$ are then kept fixed (\textit{frozen model}), and the campaign is continued with performance-oriented missions. An initial \emph{information phase} and a subsequent \emph{performance phase} are therefore distinguished and described below.
 
-The converged model parameters, denoted by $\widehat{\boldsymbol{\theta}}_p$, are then used to compute the model-based policy $\pi_{\mathrm{MB}}$, accounting for safety constraints and actuator limits within the DT,
-\begin{equation}
-\boldsymbol{\theta}_{\pi,\mathrm{MB}}
-=
-\arg\max_{\boldsymbol{\theta}_{\pi}\in\Theta_{\pi,\mathrm{safe}}}
-\mathcal R_{\circ}\!\left(
-\boldsymbol{\theta}_{\pi};
-\widehat{\boldsymbol{\theta}}_p
-\right).
-\label{eq:rt-mb-optimum}
-\end{equation}
-In the present work, $\pi_{\mathrm{MB}}$ marks the transition between the two phases. In a more general RT approach, the model-based policy can be updated after every $\boldsymbol{\theta}_p$ update.
+\subsection{Information phase} 
+At each identification step, the observations $\mathbf o_\bullet$ stored in $\mathcal B_n$ are compared with the corresponding DT predictions $\overline{\mathbf o}_\circ$. Since the policies adopted here are specified through spatial position references, the same $\mathbf x^\ast$ supplied during each physical episode is replayed in the DT. Each replay is initialized from the reconstructed initial state of the corresponding physical episode, including the internal state of the baseline feedback controller. 
 
-\paragraph*{Performance phase}
-In the present work, the performance phase starts from $\boldsymbol{\theta}_{\pi,\mathrm{MB}}$ and keeps $\widehat{\boldsymbol{\theta}}_p$ frozen. The search is restricted to a neighborhood of $\pi_{\mathrm{MB}}$ because this model-based policy already improves upon the baseline policy and provides a physically informed reference. Exploring the full policy space with a purely model-free strategy would require substantially more physical tests and could expose the physical environment to unsafe policies. The objective is therefore to improve upon $\pi_{\mathrm{MB}}$ by learning the difference between the DT reward and the physical reward. A small set of safe policies around $\pi_{\mathrm{MB}}$ is first evaluated in the DT to verify safety and then in the physical environment. These paired rewards initialize the reward-transfer surrogate,
+After every information episode, $\mathcal B_n$ is enlarged, and $\boldsymbol{\theta}_p$ can be updated by solving Eq.~\eqref{eq:rt-model-objective} before designing and deploying another episode. Identification may be performed after each episode or after a batch of episodes. The index $n$ counts physical episodes, whereas $m$ counts accepted model updates.
+A differentiable DT, such as the one adopted here, allows the gradient of $J_p$ to be computed through the replay and used for parameter estimation. Other identification methods can also be used within the same workflow. 
+Once the fit has converged numerically at the update $m$, candidate reference trajectories are generated and evaluated in the DT to determine which episode should be performed next. The selection is directed towards improving the identification of the $\boldsymbol{\theta}_p$ combinations that are least constrained by the available observations. For this purpose, the information collected through the completed episodes is quantified using the Fisher information matrix, as used in optimal experiment design~\cite{Mehra1974,Goodwin1977}. After each identification update, this matrix is evaluated again using the current $\boldsymbol{\theta}_p$. The expected cumulative information after an additional candidate episode is expressed as
 \begin{equation}
-\begin{aligned}
-\mathcal R_{\bullet}(\boldsymbol\xi)
-&=\gamma_0+
-\gamma_1\mathcal R_{\circ}
-(\boldsymbol\xi;\widehat{\boldsymbol{\theta}}_p)
-+\delta(\boldsymbol\xi)+\varepsilon,\\
-\delta&\sim\mathcal{GP}(0,k),\qquad
-\varepsilon\sim\mathcal N(0,\sigma_{\varepsilon}^{2}).
-\end{aligned}
-\label{eq:rt-surrogate}
+ \mathbf F_{n+1}(\boldsymbol{\theta}_\iota)
+ =\mathbf F_n+
+ \mathbf S(\boldsymbol{\theta}_\iota)^{\mathsf T}
+ \boldsymbol{\Sigma}_o^{-1}
+ \mathbf S(\boldsymbol{\theta}_\iota).
+ \label{eq:rt-fisher-update}
 \end{equation}
-The descriptor $\boldsymbol\xi=[\boldsymbol{\theta}_{\pi}^{\top},\boldsymbol\chi^{\top}]^{\top}$ contains the policy parameters and the operating-condition vector $\boldsymbol\chi$ that describes the performance task. The intercept $\gamma_0$ and slope $\gamma_1$ describe the global affine relation between the DT and physical rewards. The GP discrepancy $\delta(\boldsymbol\xi)$ models the policy-dependent part of the transfer that is not explained by that relation. Its Gaussian-process prior assigns similar discrepancies to nearby descriptors through the kernel $k(\boldsymbol\xi,\boldsymbol\xi')$, while $\varepsilon$ represents experimental and reward-evaluation noise.
-The GP is conditioned on the discrepancies between the physical rewards $\mathcal R_{\bullet}$ and the corresponding affine predictions obtained from the DT rewards $\mathcal R_{\circ}$ collected in the replay buffer $\mathcal B_n$. Its posterior provides the mean GP discrepancy $\mu_{\delta}(\boldsymbol\xi)$ and its standard deviation $\sigma_{\delta}(\boldsymbol\xi)$. The predicted physical reward therefore has mean
-\begin{equation}
-\mu_{\bullet}(\boldsymbol\xi)=
-\gamma_0+
-\gamma_1\mathcal R_{\circ}
-(\boldsymbol\xi;\widehat{\boldsymbol{\theta}}_p)
-+\mu_{\delta}(\boldsymbol\xi)
-\label{eq:rt-surrogate-mean}
-\end{equation}
-and GP interpolation uncertainty $\sigma_{\bullet}(\boldsymbol\xi)=\sigma_{\delta}(\boldsymbol\xi)$. This quantity is the posterior uncertainty of the adopted surrogate, not a confidence interval for experimental repeatability. The DT reward supplies the global performance trend, while the GP learns the local discrepancy between the DT and physical rewards.
+where the contribution of the completed episodes is denoted by $\mathbf F_n$. The second term represents the information expected from the potential next candidate specified by $\boldsymbol{\theta}_\iota$. Its predicted observations are differentiated with respect to $\boldsymbol{\theta}_p$, and the resulting sensitivities are collected in the Jacobian $\mathbf S(\boldsymbol{\theta}_\iota)$. Here $\boldsymbol{\Sigma}_o$ denotes the noise covariance of the full observation vector stacked over the candidate episode, and its inverse is used to weight the sensitivities. The additive update assumes that observation errors from different episodes are independent; correlations within an episode can be represented in $\boldsymbol{\Sigma}_o$. A parameter change is therefore considered more distinguishable when a larger change in the observations is predicted relative to the measurement noise. Consistent parameter scaling and episode weighting are used across candidates. When noise statistics are approximated or structural error is present, the matrix is interpreted as a comparative information metric.
 
-The next performance-oriented policy is selected through Expected Improvement. Let $\mathcal R_{\bullet}^{+}$ denote the best physical reward and $\xi\geq0$ an optional exploration margin. For $\sigma_{\bullet}(\boldsymbol\xi)>0$, define $Z(\boldsymbol\xi)=[\mu_{\bullet}(\boldsymbol\xi)-\mathcal R_{\bullet}^{+}-\xi]/\sigma_{\bullet}(\boldsymbol\xi)$, so that
+The eigenvectors of the Fisher information matrix define directions in parameter space, each corresponding to a combination of parameter variations. The information available along each direction is quantified by the corresponding eigenvalue. The smallest eigenvalue therefore identifies the least-informed direction. Under the E-optimal criterion, the next mission is selected to maximize this eigenvalue, improving the ability to distinguish parameter variations along that direction. Equivalently, the information cost $\mathcal J_{\mathrm{info}}$ is defined as its negative, and the next policy parameters are selected by minimizing this cost:
 \begin{equation}
-\operatorname{EI}(\boldsymbol\xi)=
-\left[\mu_{\bullet}(\boldsymbol\xi)-\mathcal R_{\bullet}^{+}-\xi\right]
-\Phi\!\left[Z(\boldsymbol\xi)\right]
-+
-\sigma_{\bullet}(\boldsymbol\xi)
-\phi\!\left[Z(\boldsymbol\xi)\right],
-\label{eq:rt-expected-improvement}
-\end{equation}
-where $\Phi$ and $\phi$ are the standard-normal cumulative distribution and density functions. EI is set to zero when $\sigma_{\bullet}(\boldsymbol\xi)=0$. Its first term favors policies expected to exceed the best physical reward, while the second favors uncertain candidates. The next interaction is
-\begin{equation}
-\boldsymbol\xi^{(n+1)}
-=
-\arg\max_{\boldsymbol\xi\in\mathcal X_{\mathrm{safe}}}
-\operatorname{EI}(\boldsymbol\xi).
-\label{eq:rt-next-performance}
-\end{equation}
-After deployment, the physical reward is added to $\mathcal B_n$ and the reward-transfer surrogate is updated. The DT restricts and guides the search around $\pi_{\mathrm{MB}}$, while the physical rewards allow RT to improve upon that policy.
+ \boldsymbol{\theta}_\iota^{(n+1)}
+ =\arg\min_{\boldsymbol{\theta}_\iota\in\Theta_{\iota,\mathrm{safe}}}
+ \underbrace{-\lambda_{\min}
+ [\mathbf F_{n+1}(\boldsymbol{\theta}_\iota)]}
+ _{\mathcal J_{\mathrm{info}}(\boldsymbol{\theta}_\iota)}.
+ \label{eq:rt-e-optimal}
+\end{equation} 
+Through this criterion, new episodes are directed towards information that complements the existing dataset, including combinations of parameters whose individual effects are difficult to separate. The set $\Theta_{\iota,\mathrm{safe}}$ contains candidates that pass the prescribed virtual checks on states, actions, and references. These checks depend on the predictive validity of the DT and provide screening, not a guarantee of physical safety.
 
-\paragraph*{Summary of the Reinforcement Twinning loop}
-The RT closed-loop is summarized in Fig.~\ref{fig:rt_framework}. The diagram represents one physical-digital iteration and makes explicit where information is created, where it is interpreted, and how it affects the next interaction with the physical environment. The selector $e_n$ activates one of two learning objectives without changing the architecture of the loop. An information-oriented episode modifies the physical model through factual replay, whereas a performance-oriented episode leaves that model frozen and updates the reward-transfer surrogate. In both cases, the physical environment is exposed only to a policy that has first been generated and screened in the DT.
+A separate novelty check can supplement $\mathcal J_{\mathrm{info}}$, allowing a candidate with slightly lower predicted information to be chosen when it produces a sufficiently different response from those already recorded. The admissible design domain can also be revised to concentrate new experiments where sensitivity or uncertainty indicates a need for further data. The preceding records remain in $\mathcal B_n$.
+
+After deployment, $\mathcal E^{(n+1)}$ is appended to the existing dataset and identification is repeated from the previous estimate. The information phase is ended when only small changes in the converged $\boldsymbol{\theta}_p$ estimates are obtained after new episodes are added and the magnitude of the estimated parameter correlation no longer decreases appreciably. 
+
+Once the information phase is completed, a first model-based policy $\pi_{\mathrm{MB}}$ is computed by optimizing the reference trajectory in the identified DT:
+\begin{equation}
+ \boldsymbol{\theta}_{\pi,\mathrm{MB}}
+ =\arg\max_{\boldsymbol{\theta}_\pi\in\Theta_{\pi,\mathrm{safe}}}
+ \mathcal R_\circ(\boldsymbol{\theta}_\pi;\boldsymbol{\theta}_p).
+ \label{eq:rt-mb-optimum}
+\end{equation}
+The solution $\boldsymbol{\theta}_{\pi,\mathrm{MB}}$ defines $\pi_{\mathrm{MB}}=\pi_\bullet(\cdot\mid\boldsymbol{\theta}_{\pi,\mathrm{MB}})$. Task-specific regularization can be added to discourage excessive or abrupt reference changes. The resulting policy is then deployed in the EXP to assess the initial improvement over $\pi_{\mathrm{BL}}$ obtained through model identification and predictive reference optimization. This policy provides the starting point for the subsequent performance phase, in which the remaining discrepancy between the two environments is addressed. If \(\boldsymbol{\theta}_p\) is held fixed during the performance phase, the DT is considered \textit{frozen}, and \(\pi_{\mathrm{MB}}\) is retained as the reference policy around which further improvements are sought.
+
+\subsection{Performance phase}
+In the formulation adopted in this work, $\boldsymbol{\theta}_p$ is kept fixed after the information phase. The performance phase is then directed towards improving $\mathcal R_\bullet$ deriving from $\pi_{\mathrm{MB}}$ by accounting for the discrepancies that remain between the DT and the EXP. Closer agreement between predicted and measured responses is expected after identification, but identical behavior is generally not obtained when the same policy is deployed in the two environments. Differences may be left by an incomplete model structure, insufficient identification of some parameters, or phenomena that are too complex to be represented within the adopted approximation.
+
+Consequently, a policy optimized in the DT may be assigned a higher $\mathcal R_\circ$ than the correspondent $\mathcal R_\bullet$ obtained experimentally. In this case, an apparently effective action is less successful when deployed in the EXP. Discrepancies of the opposite sign are also possible. In either case, the policy with the highest $\mathcal R_\circ$ might not provide the highest $\mathcal R_\bullet$. Further improvement is therefore sought by modeling the transfer from $\mathcal R_\circ$ to $\mathcal R_\bullet$ using a return transfer surrogate model. This model is then exploited to select policies that lead to improved performance on the EXP. 
+Following Mendez et al.~\cite{Mendez2026}, the return transfer surrogate is expressed as
+\begin{equation}
+ \begin{aligned}
+ \mathcal R_\bullet(\boldsymbol{\theta}_\pi;\mathbf c)
+ &=b_{\circ,0}
+  +b_{\circ,1}\mathcal R_\circ
+    (\boldsymbol{\theta}_\pi;\mathbf c,\boldsymbol{\theta}_p)\\
+ &\quad+\delta(\boldsymbol{\theta}_\pi,\mathbf c)+\varepsilon,
+ \qquad \delta\sim\mathcal{GP}(0,k_\delta).
+ \end{aligned}
+ \label{eq:rt-surrogate}
+\end{equation}
+The overall relation between $\mathcal R_\circ$ and $\mathcal R_\bullet$ is represented by an affine trend, with intercept $b_{\circ,0}$ and slope $b_{\circ,1}$. The discrepancy that depends on the policy and is not captured by this affine trend is modeled by the Gaussian process $\delta$. The operating conditions are collected in $\mathbf c$, allowing their influence on the discrepancy to be included when episodes at several conditions are available. Similar corrections are associated with nearby policies and conditions through the covariance kernel $k_\delta$, while return-observation noise is represented by $\varepsilon$.
+
+For the present formulation, the return is normalized relative to the return obtained with $\pi_{\mathrm{BL}}$ to express improvement on a common scale across operating conditions:
+\begin{equation}
+ \mathcal R_e(\pi;\mathbf c)
+ =1-\frac{J_e(\pi;\mathbf c)}
+          {J_e(\pi_{\mathrm{BL}};\mathbf c)},
+ \qquad e\in\{\bullet,\circ\}.
+ \label{eq:rt-normalized-reward}
+\end{equation}
+Here the performance task cost is denoted by $J_e$ and is evaluated against the nominal task target, independently of the commanded reference used by the policy. Both costs in the ratio are evaluated in the same environment at the same $\mathbf c$, with a positive baseline cost. A return of zero is therefore assigned to $\pi_{\mathrm{BL}}$, and positive values indicate a reduction in cost relative to that baseline, therefore an improved return. A value of one corresponds to zero cost, whereas negative values indicate deterioration. The normalization allows relative improvements to be compared across operating conditions; any dependence of the remaining discrepancy on $\mathbf c$ must still be learned from the available data.
+
+To avoid the experimental cost of a fully model-free search, surrogate calibration is started from two available reference policies: $\pi_{\mathrm{BL}}$, for which the normalized return is zero in both environments, and $\pi_{\mathrm{MB}}$, for which an improvement is expected from the identified model and assessed through physical deployment. When a favorable $\mathcal R_\bullet$ is already obtained with $\pi_{\mathrm{MB}}$, further improvement can be sought through local reference modifications within an initially restricted domain around this policy. Selected intermediate and neighboring policies are evaluated in both environments, and $b_{\circ,0}$, $b_{\circ,1}$, and $\delta$ are estimated from the resulting paired returns.
+The search domain can be expanded as evidence is collected. If the best physically evaluated policies are found near its boundaries, an extension can be considered to investigate further improvements beyond the initial limits. With a low-dimensional parameterization, the effects of local modifications to $\pi_{\mathrm{MB}}$ can be learned from a limited number of physical episodes. The experimental effort is thereby concentrated on refining an existing control strategy, with the aim of reducing the exploration required by a fully model-free approach. Safer exploration is additionally supported by selecting the initial candidates close to $\pi_{\mathrm{MB}}$, whose feasibility has already been assessed through physical deployment. Every candidate is additionally screened against the prescribed safety criteria in the DT before deployment, including when the domain is extended.
+
+Once the surrogate has been calibrated, a predicted physical return $\mu_\bullet$ and an associated uncertainty $\sigma_\bullet$ can be assigned to each candidate before deployment. For this purpose, the GP is conditioned on the differences between the measured $\mathcal R_\bullet$ and its affine prediction from $\mathcal R_\circ$. The resulting posterior mean and standard deviation are expressed as
+\begin{equation}
+ \mu_\bullet=b_{\circ,0}
+   +b_{\circ,1}\mathcal R_\circ+\mu_\delta, 
+ \qquad \sigma_\bullet=\sigma_\delta,
+ \label{eq:rt-surrogate-mean}
+\end{equation}
+where the posterior mean and standard deviation of $\delta$ are denoted by $\mu_\delta$ and $\sigma_\delta$. With the fitted affine coefficients and GP hyperparameters, $\sigma_\bullet$ describes uncertainty in the surrogate prediction. Additional observation noise is excluded from this quantity. Different physical returns can therefore be predicted for policies with similar $\mathcal R_\circ$, allowing their ranking to be corrected using experimental evidence.
+
+The next episode is selected to pursue an improvement over the best measured return while allowing promising but uncertain policies to be explored. This balance is expressed through Expected Improvement (EI). At fixed $\mathbf c$, the best measured return is denoted by $\mathcal R_\bullet^+$ and an optional exploration margin by $\xi\geq0$. The expected improvement is evaluated among the possible candidates as
+\begin{equation}
+ \begin{aligned}
+ Z&=\frac{\mu_\bullet-\mathcal R_\bullet^+-\xi}{\sigma_\bullet},\\
+ \operatorname{EI}
+ &=(\mu_\bullet-\mathcal R_\bullet^+-\xi)\Phi(Z)
+   +\sigma_\bullet\phi(Z),
+ \end{aligned}
+ \label{eq:rt-expected-improvement}
+\end{equation}
+where the standard-normal cumulative distribution and density functions are denoted by $\Phi$ and $\phi$, respectively. The expression is evaluated for $\sigma_\bullet>0$; for zero variance, its continuous limit is $\max(\mu_\bullet-\mathcal R_\bullet^+-\xi,0)$. A candidate may therefore be selected because a high return is predicted or because sufficient uncertainty remains for an improvement to be plausible. An immediate increase in the measured return is consequently not required at every episode.
+
+The parameters of the next policy are obtained from
+\begin{equation}
+ \boldsymbol{\theta}_\pi^{(n+1)}
+ =\arg\max_{\boldsymbol{\theta}_\pi\in\mathcal P_n}
+ \operatorname{EI}(\boldsymbol{\theta}_\pi;\mathbf c),
+ \qquad \mathcal P_n\subseteq\Theta_{\pi,\mathrm{safe}},
+ \label{eq:rt-next-performance}
+\end{equation}
+where $\mathcal P_n$ is the search domain selected and screened as described above. The corresponding $\pi_\bullet(\cdot\mid\boldsymbol{\theta}_\pi^{(n+1)})$ is deployed in the EXP. The new pair $(\mathcal R_\circ,\mathcal R_\bullet)$ is then added to the dataset, the surrogate is updated, and EI is evaluated again to select the following episode. Throughout this cycle, $\boldsymbol{\theta}_p$ is kept fixed. Further policy improvement is therefore pursued through the progressively learned return transfer, while the identified physical model is retained.
+The performance phase can be concluded when successive EI-selected episodes provide only small refinements around the best policy found, with negligible measured improvement and little remaining expected improvement across the admissible domain. This behavior is taken as a practical indication of convergence within the selected domain and policy parameterization. Further gains may then be pursued by extending the search domain or introducing additional parameters through which different reference modifications can be represented.
+
+\subsection{Summary of the Reinforcement Twinning loop}
+The RT closed-loop is summarized in Fig.~\ref{fig:rt_framework}. One episode and the associated operations in each environment are represented, from the collection of physical evidence to its use in selecting the next episode. The objective of the completed episode is specified by $e_n$; candidate evaluation and selection for the following episode are governed by $e_{n+1}$. An information-oriented episode is used to update $\boldsymbol{\theta}_p$ through factual replay, whereas a performance-oriented episode leaves that model frozen and updates the return-transfer surrogate. After initialization with $\pi_{\mathrm{BL}}$, the EXP is exposed only to policies that have first been generated and screened in the DT. The baseline record is used both to establish the initial performance and to perform the first identification update, before the first information-oriented policy is designed.
 
 \begin{figure*}[t]
 \centering
@@ -261,57 +268,58 @@ The RT closed-loop is summarized in Fig.~\ref{fig:rt_framework}. The diagram rep
 
 % Panel headers and images
 \node[font=\bfseries\normalsize,align=center] (ptitle) at (0,7.70)
-  {Physical environment ($\bullet$)\\[-0.2mm]{\normalfont\normalsize Objective: improve policy parameters $\theta_\pi^{(n)}$}};
+  {Physical Environment ($\bullet$)\\[-0.2mm]{\normalfont\normalsize Objective: maximize $\mathcal R_\bullet$ through $\boldsymbol{\theta}_\pi$}};
 \node (pimage) at (0,5.55)
   {\includegraphics[height=3.08cm]{Methodology/Physical_Environment.png}};
 
 \node[font=\bfseries\normalsize,align=center] (dtitle) at (9.0,7.70)
-  {Digital twin ($\circ$)\\[-0.2mm]{\normalfont\normalsize Objective: improve model parameters $\theta_p^{(m)}$}};
+  {Digital Twin ($\circ$)\\[-0.2mm]{\normalfont\normalsize Objective: identify $\boldsymbol{\theta}_p$}};
 \node (dimage) at (9.0,5.55)
   {\includegraphics[height=3.08cm]{Methodology/Digital_Twin.png}};
 
-% Physical environment
+% EXP
 \node[block] (b1) at (0,2.75) {
   \textbf{Deployed policy $\pi_\bullet^{(n)}$}\\[1mm]
-  $e_n=1$: information $\pi_\iota(\cdot\mid\theta_\iota^{(n)})$\\
-  $e_n=0$: performance $\pi_\bullet(\cdot\mid\theta_\pi^{(n)})$
+  $e_n=1$: information $\pi_\iota(\cdot\mid\boldsymbol{\theta}_\iota^{(n)})$\\
+  $e_n=0$: performance $\pi_\bullet(\cdot\mid\boldsymbol{\theta}_\pi^{(n)})$
 };
 
 \node[block] (b2) at (0,0.35) {
   \textbf{Physical episode $n$}\\[1mm]
-  hidden state $\mathbf{s}_\bullet$, input $\mathbf z$\\
+  state $\mathbf{s}_\bullet$, actions $\mathbf a_\bullet$, input $\mathbf z$\\
   noisy observations $\mathbf{o}_\bullet$
 };
 
 \node[block] (b3) at (0,-2.10) {
   \textbf{Record $\mathcal E^{(n)}$}\\[1mm]
-  $\mathcal E^{(n)}$ put in replay buffer $\mathcal B$;\\
+  $\mathcal E^{(n)}$ stored in $\mathcal B_n$;\\
   evaluated $\mathcal R_\bullet^{(n)}$
   
 };
 
 % Digital twin
 \node[block] (b6) at (9.0,2.75) {
-  \textbf{Choice of the next interaction}\\[1mm]
-  $e_n=1$: $\mathcal J_{\mathrm{info}}\rightarrow\theta_\iota^{(n+1)}$
-  \\
-  $e_n=0$: $\widehat{\mathcal R}_\bullet(\mathcal R_\bullet,\mathcal R_\circ,\theta_\pi)$
-  $\rightarrow\theta_\pi^{(n+1)}$
+  \textbf{Choice of the next episode}\\[1mm]
+  $e_{n+1}=1$: $\mathcal J_{\mathrm{info}}
+  \rightarrow\boldsymbol{\theta}_\iota^{(n+1)}$\\
+  $e_{n+1}=0$: $\operatorname{EI}
+  \rightarrow\boldsymbol{\theta}_\pi^{(n+1)}$\\
+  {\footnotesize EI after initial surrogate calibration}
 };
 
 \node[block] (b5) at (9.0,0.35) {
   \textbf{Virtual candidate evaluation}\\[1mm]
-  $e_n=1$: informativeness $\mathcal J_{\mathrm{info}}(\theta_\iota)$
+  $e_{n+1}=1$: informativeness $\mathcal J_{\mathrm{info}}(\boldsymbol{\theta}_\iota)$
   \\
-  $e_n=0$: $\theta_p^{(m+1)}\rightarrow\theta_{\pi,\mathrm{MB}}$
+  $e_{n+1}=0$: $\pi_{\mathrm{MB}}$, candidates in $\mathcal P_n$, $\mathcal R_\circ$
 };
 
-\node[block] (b4) at (9.0,-2.10) {
+\node[block] (b4) at (9.0,-2.10) { 
   \textbf{Factual replay}\\[1mm]
   
-  initial-state reconstruction\\
-  $e_n=1$: $\mathbf o_\circ$ vs. $\mathbf o_\bullet\rightarrow\theta_p^{(m+1)}$ updated\\
-  $e_n=0$: $\theta_p^{(m+1)}=\theta_p^{(m)}$
+  initial-state reconstruction; episode replay\\
+  information phase: $\overline{\mathbf o}_\circ$ vs. $\mathbf o_\bullet\rightarrow\boldsymbol{\theta}_p^{(m+1)}$\\
+  performance phase: $\boldsymbol{\theta}_p$ fixed
 };
 
 % Number labels
@@ -325,18 +333,16 @@ The RT closed-loop is summarized in Fig.~\ref{fig:rt_framework}. The diagram rep
 % Main loop
 \draw[flow] (b1.south) -- node[note,right]{deploy} (b2.north);
 \draw[flow] (b2.south) -- node[note,right]{measure} (b3.north);
-\draw[flow] (b3.east) -- node[note,below]{replay buffer $\mathcal B$} (b4.west);
-\draw[flow] (b4.north) -- node[note,right,text width=3.35cm,align=center]{
-  $\theta_p^{(m+1)}$\\
-  } (b5.south);
+\draw[flow] (b3.east) -- node[note,below]{$\mathcal B_n$} (b4.west);
+\draw[flow] (b4.north) -- node[note,right]{$\boldsymbol{\theta}_p$} (b5.south);
 \draw[flow] (b5.north) -- node[note,right]{
-  $\mathcal R_\circ,\,\theta_{\pi,\mathrm{MB}},\,\mathcal J_{\mathrm{info}}$} (b6.south);
+  $\mathcal R_\circ,\,\mathcal J_{\mathrm{info}}$} (b6.south);
 \draw[flow] (b6.west) -- node[note,above,text width=3.2cm,align=center]{
-  next interaction:\\[0.8mm] $\theta_\pi^{(n+1)}$ or $\theta_\iota^{(n+1)}$} (b1.east);
+  next episode:\\[0.8mm] $\boldsymbol{\theta}_\pi^{(n+1)}$ or $\boldsymbol{\theta}_\iota^{(n+1)}$} (b1.east);
 
 % Measured performance data bypasses factual identification
 \draw[flow] (b3.east) -- ++(1.00,0) coordinate (retcorner)  -- node[note,rotate=90,above]{
-  measured returns $(\theta_\pi^{(n)},\mathcal R_\bullet^{(n)})$} (retcorner |- b6.south west)  -- (b6.south west);
+  $\boldsymbol{\theta}_\pi^{(n)},\,\mathcal R_\bullet^{(n)}\quad(e_n=0)$} (retcorner |- b6.south west)  -- (b6.south west);
 
 % Panel backgrounds
 \begin{scope}[on background layer]
@@ -350,21 +356,28 @@ The RT closed-loop is summarized in Fig.~\ref{fig:rt_framework}. The diagram rep
 
 \end{tikzpicture}%
 }
-\caption{Reinforcement Twinning closed-loop adopted in this work. The physical environment and its active Digital Twin evolve side by side through physical observations and virtual candidate evaluations, in order to achieve their respective objectives. The selector $e_n$ distinguishes information-oriented ($e_n=1$) and performance-oriented ($e_n=0$) interactions, keeping a common loop for both cases.}
-\label{fig:rt_framework}
+\caption{Reinforcement Twinning closed loop for an episode $n$, from policy deployment to the selection of the policy for episode $n+1$. (1) Following initialization with $\pi_{\mathrm{BL}}$, an information-oriented or performance-oriented policy is deployed by supplying $\mathbf x^\ast$ to the baseline feedback controller. (2) The physical episode is performed in the presence of exogenous inputs $\mathbf z$, and observations $\mathbf o_\bullet$ are acquired. (3) The episode record $\mathcal E^{(n)}$ is stored in $\mathcal B_n$ and the physical return $\mathcal R_\bullet^{(n)}$ is evaluated. (4) The episode is replayed in the DT from reconstructed initial conditions. During the information phase, including the initial baseline replay, $\boldsymbol{\theta}_p$ is identified by comparing $\overline{\mathbf o}_\circ$ with $\mathbf o_\bullet$. During the subsequent performance phase, $\boldsymbol{\theta}_p$ is kept fixed and paired returns are obtained for surrogate calibration. (5) Candidate episodes are evaluated virtually to quantify their expected information or their DT return around $\pi_{\mathrm{MB}}$. (6) For $e_{n+1}=1$, $\boldsymbol{\theta}_\iota^{(n+1)}$ is selected by minimizing $\mathcal J_{\mathrm{info}}$; for $e_{n+1}=0$, $\pi_{\mathrm{MB}}$ and initial calibration policies are deployed first, after which further policies are selected using EI and the calibrated return transfer surrogate. In the adopted schedule, the information phase is completed first, after which the identified model is frozen during the performance phase.}
+\label{fig:rt_framework} 
 \end{figure*}
-The actions carried out in each block can be summarized as follows:
-\begin{enumerate}
-    \item Policy deployment: the iteration starts from the parameters selected at the end of the previous DT evaluation. The first interaction uses the baseline policy $\pi_{\mathrm{BL}}$, executed through the built-in PID controller, and provides the reference performance for comparison with the optimized policies. For $e_n=1$, the deployed policy is an information-oriented policy $\pi_{\iota}(\cdot\mid\boldsymbol{\theta}_{\iota}^{(n)})$; for $e_n=0$, it is a performance-oriented policy $\pi_{\bullet}(\cdot\mid\boldsymbol{\theta}_{\pi}^{(n)})$. This first block converts a design decision made in the DT into an executable command for the physical controller. The policy representation, its admissible parameter set, and all safety checks are application dependent, but the RT principle is unchanged: the DT proposes the interaction, while the physical environment supplies the evidence that determines whether the proposal was useful.
-    \item Physical episode: the physical environment evolves under its hidden dynamics, the deployed policy, and the exogenous input $\mathbf d$. The latter collects quantities that influence the episode without being selected by the policy, such as environmental disturbances, initial-condition variations, or changes in available actuation. The internal state $\mathbf s_{\bullet}$ is not generally known. RT receives the noisy observations $\mathbf o_{\bullet}$, the commanded inputs, and the operating conditions that are needed to reconstruct the episode. This distinction is essential because the DT is updated from what the experiment can actually measure.
-    \item Recording: the observations, deployed policy, operating condition, control signals, exogenous inputs, and evaluated physical reward are collected in the episode record $\mathcal E^{(n)}$ and appended to the replay buffer $\mathcal B$. The purpose of this passage is to preserve a common, traceable description of the interaction before the information and performance branches use it differently. The replay buffer therefore links all later virtual operations to the experiment that produced their data and permits a model update to be repeated on the complete cumulative dataset.
-    \item Factual replay: the DT reconstructs the initial state and replays the recorded policy under the measured operating conditions. When $e_n=1$, DT observations $\mathbf o_{\circ}$ are compared with $\mathbf o_{\bullet}$ and the mismatch is differentiated through the closed-loop twin. The model parameters are then updated from $\boldsymbol{\theta}_p^{(m)}$ to $\boldsymbol{\theta}_p^{(m+1)}$ using the cumulative replay buffer. When $e_n=0$, the model parameters remain frozen, so that $\boldsymbol{\theta}_p^{(m+1)}=\boldsymbol{\theta}_p^{(m)}$. The new policy-reward pair bypasses identification and instead augments the dataset used to learn the reward-transfer surrogate. Factual replay thus has a different learning target in the two phases, while the recorded evidence entering the loop remains the same.
-    \item Virtual candidate evaluation: with the current model parameters, the DT evaluates interactions that have not yet been carried out. In the information branch, information-oriented policies are propagated through the closed-loop model, differentiated with respect to $\boldsymbol{\theta}_p$, and scored by the information they are expected to add to the weakest parameter direction. In the performance branch, the converged DT first provides the model-based policy $\pi_{\mathrm{MB}}$. Candidate deviations around this policy are then simulated, rejected if they violate the DT safety checks, and assigned both a DT reward and a reward-transfer surrogate prediction of their physical reward. This block is the main computational advantage of RT: a large candidate set can be explored in the DT while only a small number of selected policies reaches the physical environment.
-    \item Choice of the next interaction: the final block converts the virtual evaluations into the next physical policy. For $e_n=1$, Eq.~\eqref{eq:rt-e-optimal} selects the candidate that maximizes the smallest eigenvalue of the cumulative Fisher matrix and therefore strengthens the least-observed joint parameter direction. For $e_n=0$, Eq.~\eqref{eq:rt-next-performance} selects the candidate with the largest Expected Improvement, balancing a high predicted physical reward against uncertainty in the learned transfer. The selected parameters are returned to Block~1, the physical episode index advances from $n$ to $n+1$, and the loop repeats. In the present work, the model-update index $m$ advances only in the information phase; separating the two indices makes clear that collecting a new performance episode does not imply a new model update.
-\end{enumerate}
+  
+The operations carried out in each block can be summarized as follows:
 
-The selector value is scheduled within the test campaign. The loop first repeats Blocks~1-6 with $e_n=1$ until the model satisfies the adopted convergence and uncertainty criteria. It then switches once to $e_n=0$ and keeps the identified parameters fixed while the reward-transfer surrogate is refined. The following subsection specializes every element of this generic loop for the adopted test case.
-\subsection{Test Case Physical and Digital Environments}
+(1) \textbf{Policy deployment:} the episode is started from the parameters selected at the end of the previous DT evaluation, except for the initial baseline episode, in which the nominal task reference is supplied directly to the baseline feedback controller.
+For $e_n=1$, an information-oriented $\pi_\iota(\cdot\mid\boldsymbol{\theta}_\iota^{(n)})$ is deployed; for $e_n=0$, a performance-oriented $\pi_\bullet(\cdot\mid\boldsymbol{\theta}_\pi^{(n)})$ is deployed. The reference $\mathbf{x}^{\ast}$ specified by these parameters is supplied to the baseline feedback controller. A design decision made in the DT is thus converted into an executable policy, whose effectiveness is subsequently assessed in the EXP.
+
+(2) \textbf{Physical episode:} the position reference $\mathbf{x}^{\ast}$ is supplied to the baseline feedback controller, through which the actions $\mathbf a_\bullet$ are generated and applied to the EXP. The response is affected by the exogenous input $\mathbf z$, including disturbances not selected by the policy. Although the complete $\mathbf s_\bullet$ is generally unavailable, $\mathbf o_\bullet$ is acquired together with the reference, available controller records, and operating conditions $\mathbf c$. Identification and performance assessment are consequently based on the quantities that can actually be measured. 
+
+(3) \textbf{Recording:} the observations, deployed policy, operating conditions, control signals, available exogenous inputs, and evaluated $\mathcal R_\bullet^{(n)}$ are collected in $\mathcal E^{(n)}$ and appended to $\mathcal B_n$. The returns of $\pi_{\mathrm{BL}}$ and the subsequent performance-oriented policies are associated with their deployed $\boldsymbol{\theta}_\pi^{(n)}$ and supplied to the return transfer surrogate. Purely information-oriented episodes contribute to $\mathcal B_n$ but are excluded from surrogate calibration. 
+
+(4) \textbf{Factual replay:} the initial conditions are reconstructed, including the internal state of the baseline feedback controller, and the recorded reference is replayed in the DT at the corresponding $\mathbf c$. During the information phase, $\overline{\mathbf o}_\circ$ is compared with $\mathbf o_\bullet$ and $\boldsymbol{\theta}_p$ is identified using the cumulative $\mathcal B_n$ through Eq.~\eqref{eq:rt-model-objective}. The same identification procedure is first applied to the initial baseline record, even though $\pi_{\mathrm{BL}}$ is a performance-oriented policy. The effect of $\boldsymbol{\theta}_p$ on the feedback response is included through the reproduced baseline feedback controller. During the subsequent performance phase, $\boldsymbol{\theta}_p$ is kept fixed, and the measured $\mathcal R_\bullet$ is paired with $\mathcal R_\circ$ to refine the return transfer surrogate. The baseline $\mathcal R_\circ$ used for calibration is reevaluated with this frozen DT.
+
+(5) \textbf{Virtual candidate evaluation:} with the current $\boldsymbol{\theta}_p$, candidate episodes are evaluated before physical deployment. In the information phase, their predicted observations are differentiated with respect to $\boldsymbol{\theta}_p$ and scored by the information expected to be added along the weakest parameter direction. At the transition to performance, $\pi_{\mathrm{MB}}$ is computed in the identified DT. Candidate modifications around this policy are then simulated within $\mathcal P_n$, screened against the prescribed virtual constraints, and assigned $\mathcal R_\circ$. A large candidate set can therefore be evaluated in the DT while only a small subset is selected for physical testing.
+
+(6) \textbf{Choice of the next episode:} the virtual evaluations are used to select $\boldsymbol{\theta}_\iota^{(n+1)}$ or $\boldsymbol{\theta}_\pi^{(n+1)}$ according to $e_{n+1}$. For $e_{n+1}=1$, Eq.~\eqref{eq:rt-e-optimal} is used to minimize $\mathcal J_{\mathrm{info}}$, equivalently maximizing $\lambda_{\min}[\mathbf F_{n+1}(\boldsymbol{\theta}_\iota)]$, with any additional novelty check applied as described in the information phase. For $e_{n+1}=0$, $\pi_{\mathrm{MB}}$ is deployed first, followed by the initial policies used to calibrate the surrogate from paired returns. Once this initial calibration has been completed, its predicted mean and uncertainty are used to evaluate EI, and the next $\boldsymbol{\theta}_\pi$ is selected through Eq.~\eqref{eq:rt-next-performance}. The selected parameters are returned to Block~1, $n$ is advanced, and the loop is repeated. The index $m$ is advanced only when an update of $\boldsymbol{\theta}_p$ is accepted.
+
+Following the initial baseline episode and its first identification update, Blocks~1--6 are repeated with $e_n=1$ until the identification stopping criteria are satisfied. The identified $\boldsymbol{\theta}_p$ is then frozen, $\pi_{\mathrm{MB}}$ is deployed, and the loop is continued with $e_n=0$, first for surrogate calibration and then for EI-guided refinement. During the performance search, $\mathcal P_n$ may be extended when promising policies are found near its boundaries. The following section specializes the two environments and the associated identification and policy-design operations for the experimental application.
+
+\section{Test Case Physical and Digital Environments}
 \label{sec:setup}
 \paragraph*{Experimental setup}
 The experiments are designed to reproduce a transition between out-of-ground-effect (OGE) and in-ground-effect (IGE) conditions over a finite obstacle while maintaining a constant forward flight speed. The experimental setup and adopted reference frame are illustrated in Fig.~\ref{fig:experimental_setup}.
@@ -424,14 +437,14 @@ The Crazyflie 2.1+ is equipped with an onboard IMU sensor for attitude control a
 
 During each run, the Crazyflie firmware records the vehicle state, control response, and operating conditions. The logged quantities include position and translational velocity, attitude and angular rates, acceleration, battery voltage, collective-thrust command, and the individual motor PWM commands. The complete record is retained for trajectory assessment and for reconstructing each physical episode in the DT. For GE identification, the physical and DT trajectories are aligned along the streamwise coordinate, and the adjoint optimization minimizes the normalized vertical-position discrepancy over the obstacle region. The remaining channels support initialization and replay of the measured operating conditions, but do not enter the identification objective directly.
 
-The Crazyflie is operated using its standard cascaded PID control architecture, as documented by Bitcraze~\cite{BitcrazeControllers}. An outer position loop tracks the desired position $\mathbf{x}^{*}$ and generates the corresponding velocity references $\mathbf{v}^{*}$. A velocity loop then regulates the translational motion, producing the desired roll and pitch angles together with the collective thrust command. These references are passed to the attitude controller, which determines the desired body angular rates. Finally, the inner angular-rate controller generates the roll, pitch, and yaw control contributions, which are combined with the collective thrust through the onboard motor mixer to determine the four individual motor commands. The same control architecture and firmware logic are reproduced in the DT from the official implementation~\cite{BitcrazeFirmware}, ensuring consistency between the numerical and experimental closed-loop dynamics.
+The Crazyflie is operated using its standard cascaded PID control architecture, as documented by Bitcraze~\cite{BitcrazeControllers}. An outer position loop tracks the commanded position $\mathbf{x}_{\pi}^{\ast}$ and generates the corresponding velocity reference $\mathbf{v}_{\pi}^{\ast}$. For the baseline policy, $\mathbf{x}_{\pi}^{\ast}=\mathbf{x}^{\ast}$; the optimized policies modify the commanded vertical coordinate while retaining the nominal tracking objective $\mathbf{x}^{\ast}$. A velocity loop then regulates the translational motion, producing the desired roll and pitch angles together with the collective thrust command. These references are passed to the attitude controller, which determines the desired body angular rates. Finally, the inner angular-rate controller generates the roll, pitch, and yaw control contributions, which are combined with the collective thrust through the onboard motor mixer to determine the four individual motor commands. The same control architecture and firmware logic are reproduced in the DT from the official implementation~\cite{BitcrazeFirmware}, ensuring consistency between the numerical and experimental closed-loop dynamics.
 
 \paragraph*{Digital Twin}
 \label{sec:digital_twin}
 
 The Digital Twin developed in this work follows the modeling formulation proposed by Richardson et al.~\cite{Richardson2025} for low-speed free flight and is tailored to reproduce the dynamics of the Crazyflie 2.1+ employed in the experimental campaign. The model is implemented as a differentiable physics-based simulator using the JAX library in Python and is used for both model identification and control optimization. The vehicle kinematics, rigid-body dynamics, propulsion system, battery dependence, actuator dynamics, and cascaded controller together form the nominal starting DT. Their parameters are inherited unchanged from Richardson et al.; they are neither reidentified nor independently revalidated in the present campaign. The finite-obstacle ground-effect correction is incorporated below as the unknown model component with associated $\boldsymbol{\theta}_p$ learned by RT.
 
-The Crazyflie is modeled as a six-degree-of-freedom rigid body. Its state is described by position $\mathbf{x}=[x,y,z]^T$ and translational velocity $\mathbf{v}=[v_x,v_y,v_z]^T$ expressed in the inertial frame, the attitude quaternion $\mathbf{q}=[q_w,q_x,q_y,q_z]^T$, and the angular velocity $\boldsymbol{\omega}=[\omega_x,\omega_y,\omega_z]^T$ expressed in the body-fixed frame. The rotational speed of rotor $i$ is represented by $\Omega_i$.
+The Crazyflie is modeled as a six-degree-of-freedom rigid body. The position $\mathbf{x}=[x,y,z]^{\mathsf T}$ and translational velocity $\mathbf{v}=[v_x,v_y,v_z]^{\mathsf T}$ are expressed in the inertial frame, while the attitude is represented by the quaternion $\mathbf{q}=[q_w,q_x,q_y,q_z]^{\mathsf T}$ and the body angular velocity by $\boldsymbol{\omega}=[\omega_x,\omega_y,\omega_z]^{\mathsf T}$. Together with the rotor speeds $\Omega_i$, these quantities describe the vehicle response within $\mathbf s_\circ$; the complete closed-loop simulation also propagates the actuator and controller memory.
 
 The translational dynamics evaluated at the center of mass (CoM) are
 %
@@ -779,7 +792,7 @@ The final block evaluates whether the policy structure learned at the nominal co
 
 The first experimental case employs only the cascaded PID controller available in the original Crazyflie firmware. The most direct target for this baseline crossing is a constant-clearance trajectory at $(z^\ast/R,\,v_x^\ast/v_h)=(1.5,0.079)$. The desired trajectory is therefore the straight horizontal line denoted by $\pi_{\mathrm{BL}}$ and reported with a dashed line in Fig.~\ref{fig:stage0}. This case establishes the performance baseline because the controller acts exclusively through feedback, without any anticipation of the approaching aerodynamic interaction.
 
-The solid line in Fig.~\ref{fig:stage0} reports the mean experimental trajectory $\mathrm{EXP}_{\mathrm{BL}}$ obtained from five repetitions, while the surrounding shaded region represents the corresponding $\pm\mathrm{RMS}$ run-to-run dispersion. At each streamwise position, this quantity is defined as $\mathrm{RMS}(x)=[N_r^{-1}\sum_{j=1}^{N_r}(z_j(x)-\overline z(x))^2]^{1/2}$, with $N_r=5$. The band therefore describes repeatability about the measured mean and is not an uncertainty interval for that mean. Before reaching the obstacle, the vehicle maintains an almost constant clearance close to the commanded value, supporting satisfactory tracking at this modest forward speed away from the surface interaction. The response changes markedly over the obstacle: the vehicle initially rises to approximately $z/R=2.5$ and subsequently settles around $z/R=2$. The additional thrust generated in ground effect produces the initial overshoot. The feedback controller reacts by reducing the motor speeds and commanded thrust, but this corrective action is insufficient to recover $z^*/R=1.5$ while the vehicle remains over the obstacle. The cascaded PID is tuned around hovering and contains no model that can anticipate the surface-induced thrust augmentation.
+The solid line in Fig.~\ref{fig:stage0} reports the mean experimental trajectory $\mathrm{EXP}_{\mathrm{BL}}$ obtained from five repetitions, while the surrounding shaded region represents the corresponding $\pm\mathrm{RMS}$ run-to-run dispersion. At each streamwise position, this quantity is defined as $\mathrm{RMS}(x)=[N_r^{-1}\sum_{j=1}^{N_r}(z_j(x)-\overline z(x))^2]^{1/2}$, with $N_r=5$. The band therefore describes repeatability about the measured mean and is not an uncertainty interval for that mean. Before reaching the obstacle, the vehicle maintains an almost constant clearance close to the commanded value, supporting satisfactory tracking at this modest forward speed away from the surface interaction. The response changes markedly over the obstacle: the vehicle initially rises to approximately $z/R=2.5$ and subsequently settles around $z/R=2$. The additional thrust generated in ground effect produces the initial overshoot. The feedback controller reacts by reducing the motor speeds and commanded thrust, but this corrective action is insufficient to recover $z^\ast/R=1.5$ while the vehicle remains over the obstacle. The cascaded PID is tuned around hovering and contains no model that can anticipate the surface-induced thrust augmentation.
 
 The opposite transient occurs at the trailing edge. Ground-effect augmentation disappears while the motor command is still reduced by the preceding feedback action, producing an undershoot down to approximately $z/R=0.5$. The vehicle then gradually recovers the commanded clearance, which is reached only about $40R$ downstream of the obstacle. Both excursions are substantially larger than the run-to-run dispersion, indicating a repeatable interaction rather than experimental scatter. The baseline experiment consequently provides the reference cost for all subsequent performance comparisons and the first factual record used during the information phase.
 
@@ -992,6 +1005,8 @@ The authors gratefully acknowledge the technical support of the von Karman Insti
 \bibliography{references}
 
 \end{document}
+
+
 
 
 
