@@ -1,0 +1,188 @@
+\relax 
+\citation{EuropeanCommission2026}
+\citation{Matus2020}
+\citation{Carter2021}
+\citation{Franzetti2024}
+\citation{Carter2021}
+\citation{Franzetti2024}
+\citation{Cai2024}
+\citation{Matus2020}
+\citation{Carter2021}
+\citation{Kan2019}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
+\newlabel{Introduction}{{I}{1}{}{section.1}{}}
+\citation{MPCReview2021}
+\citation{SchenaRT2023}
+\citation{Mendez2026}
+\citation{PolettiRT2025}
+\citation{Korenhof2021}
+\citation{Wagg2025}
+\citation{SchenaRT2023}
+\citation{PolettiRT2025}
+\citation{SchenaRT2023}
+\citation{PolettiRT2025}
+\citation{Mendez2026}
+\citation{Feldbaum1960}
+\citation{Filatov2000}
+\citation{Mesbah2018}
+\citation{Kennedy2001}
+\citation{Rasmussen2006}
+\citation{Mockus1975}
+\citation{Forrester2007}
+\citation{Richardson2025}
+\citation{SchenaRT2023}
+\citation{Mendez2026}
+\citation{Mendez2026}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Reinforcement Twinning Methodology}{3}{}\protected@file@percent }
+\newlabel{sec:methodology}{{II}{3}{}{section.2}{}}
+\newlabel{sec:rt-framework}{{II}{3}{}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Environments, observations and objectives}{3}{}\protected@file@percent }
+\newlabel{eq:rt-physical-state}{{1}{3}{}{equation.1}{}}
+\newlabel{eq:rt-physical-observation}{{2}{3}{}{equation.2}{}}
+\newlabel{eq:rt-physical-objective}{{3}{3}{}{equation.3}{}}
+\newlabel{eq:rt-digital-state}{{4}{3}{}{equation.4}{}}
+\newlabel{eq:rt-digital-observation}{{5}{3}{}{equation.5}{}}
+\newlabel{eq:rt-model-objective}{{6}{3}{}{equation.6}{}}
+\citation{Mendez2026}
+\citation{Mehra1974}
+\citation{Goodwin1977}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Policy representation and episode schedule}{4}{}\protected@file@percent }
+\newlabel{eq:rt-policy-schedule}{{7}{4}{}{equation.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Information phase}{4}{}\protected@file@percent }
+\newlabel{eq:rt-fisher-update}{{8}{4}{}{equation.8}{}}
+\citation{Mendez2026}
+\newlabel{eq:rt-e-optimal}{{9}{5}{}{equation.9}{}}
+\newlabel{eq:rt-mb-optimum}{{10}{5}{}{equation.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Performance phase}{5}{}\protected@file@percent }
+\newlabel{eq:rt-surrogate}{{11}{5}{}{equation.11}{}}
+\newlabel{eq:rt-normalized-reward}{{12}{5}{}{equation.12}{}}
+\newlabel{eq:rt-surrogate-mean}{{13}{6}{}{equation.13}{}}
+\newlabel{eq:rt-expected-improvement}{{14}{6}{}{equation.14}{}}
+\newlabel{eq:rt-next-performance}{{15}{6}{}{equation.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-E}}Summary of the Reinforcement Twinning loop}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Reinforcement Twinning closed loop for an episode $n$, from policy deployment to the selection of the policy for episode $n+1$. (1) Following initialization with $\pi _{\mathrm  {BL}}$, an information-oriented or performance-oriented policy is deployed by supplying $\mathbf  x^\ast $ to the baseline feedback controller. (2) The physical episode is performed in the presence of exogenous inputs $\mathbf  z$, and observations $\mathbf  o_\bullet $ are acquired. (3) The episode record $\mathcal  E^{(n)}$ is stored in $\mathcal  B_n$ and the physical return $\mathcal  R_\bullet ^{(n)}$ is evaluated. (4) The episode is replayed in the DT from reconstructed initial conditions. During the information phase, including the initial baseline replay, $\boldsymbol  {\theta }_p$ is identified by comparing $\overline  {\mathbf  o}_\circ $ with $\mathbf  o_\bullet $. During the subsequent performance phase, $\boldsymbol  {\theta }_p$ is kept fixed and paired returns are obtained for surrogate calibration. (5) Candidate episodes are evaluated virtually to quantify their expected information or their DT return around $\pi _{\mathrm  {MB}}$. (6) For $e_{n+1}=1$, $\boldsymbol  {\theta }_\iota ^{(n+1)}$ is selected by minimizing $\mathcal  J_{\mathrm  {info}}$; for $e_{n+1}=0$, $\pi _{\mathrm  {MB}}$ and initial calibration policies are deployed first, after which further policies are selected using EI and the calibrated return transfer surrogate. In the adopted schedule, the information phase is completed first, after which the identified model is frozen during the performance phase.}}{7}{}\protected@file@percent }
+\newlabel{fig:rt_framework}{{1}{7}{}{figure.1}{}}
+\citation{Taffanel2021Lighthouse}
+\citation{BitcrazeControllers}
+\citation{BitcrazeFirmware}
+\citation{Richardson2025}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Test Case Physical and Digital Environments}{8}{}\protected@file@percent }
+\newlabel{sec:setup}{{III}{8}{}{section.3}{}}
+\newlabel{sec:digital_twin}{{III}{8}{}{figure.2}{}}
+\newlabel{eq_vehicle_trasl}{{16}{8}{}{equation.16}{}}
+\citation{Richardson2025}
+\citation{Richardson2025}
+\citation{Richardson2025}
+\citation{Richardson2025}
+\citation{CheesemanBennett1955}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Experimental setup, operating trajectory, Lighthouse coverage, and adopted reference frame.}}{9}{}\protected@file@percent }
+\newlabel{fig:experimental_setup}{{2}{9}{}{figure.2}{}}
+\newlabel{eq_vehicle_rot}{{17}{9}{}{equation.17}{}}
+\newlabel{eq_vehicle_attitude}{{18}{9}{}{equation.18}{}}
+\newlabel{eq_T_and_Q}{{19}{9}{}{equation.19}{}}
+\newlabel{eq_RP_moments}{{20}{9}{}{equation.20}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Baseline DT parameters adopted from Richardson et al.~\cite  {Richardson2025}.}}{9}{}\protected@file@percent }
+\newlabel{tab:dt_parameters}{{I}{9}{}{table.1}{}}
+\citation{Kan2019}
+\citation{Kan2019}
+\newlabel{sec:ge-model}{{III}{10}{}{table.1}{}}
+\newlabel{eq:ge-thrust-factor}{{21}{10}{}{equation.21}{}}
+\newlabel{eq:fge}{{22}{10}{}{equation.22}{}}
+\newlabel{eq:corrected-thrust}{{23}{10}{}{equation.23}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Test Campaign Overview}{10}{}\protected@file@percent }
+\newlabel{sec:test-campaign}{{\mbox  {III-A}}{10}{}{subsection.3.1}{}}
+\newlabel{eq:hover-induced-velocity}{{24}{10}{}{equation.24}{}}
+\newlabel{sec:information-phase}{{\mbox  {III-A}}{10}{}{equation.24}{}}
+\newlabel{eq:episode-error-vectors}{{26}{11}{}{equation.26}{}}
+\newlabel{eq:identification-loss}{{27}{11}{}{equation.27}{}}
+\newlabel{eq:adjoint-gradient}{{28}{11}{}{equation.28}{}}
+\newlabel{eq:adam-moments}{{30}{11}{}{equation.30}{}}
+\newlabel{eq:adjoint-adam}{{31}{11}{}{equation.31}{}}
+\newlabel{eq:parameter-covariance}{{33}{11}{}{equation.33}{}}
+\newlabel{eq:uncertainty-propagation}{{34}{11}{}{equation.34}{}}
+\newlabel{eq:cumulative-fisher}{{36}{11}{}{equation.36}{}}
+\newlabel{eq:e-optimal-design}{{37}{12}{}{equation.37}{}}
+\newlabel{sec:mb-optimum}{{\mbox  {III-A}}{12}{}{equation.37}{}}
+\newlabel{eq:policy}{{38}{12}{}{equation.38}{}}
+\newlabel{eq:reward}{{39}{12}{}{equation.39}{}}
+\newlabel{eq:mb-objective}{{40}{12}{}{equation.40}{}}
+\newlabel{sec:performance-phase}{{\mbox  {III-A}}{12}{}{equation.40}{}}
+\newlabel{eq:rt-policy}{{41}{12}{}{equation.41}{}}
+\newlabel{eq:reward-transfer}{{42}{13}{}{equation.42}{}}
+\newlabel{eq:ei}{{45}{13}{}{equation.45}{}}
+\newlabel{eq:normalized-score}{{46}{13}{}{equation.46}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Results and Discussion}{13}{}\protected@file@percent }
+\newlabel{sec:results}{{IV}{13}{}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Baseline Response}{13}{}\protected@file@percent }
+\newlabel{sec:results-bl}{{\mbox  {IV-A}}{13}{}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Information Phase}{13}{}\protected@file@percent }
+\newlabel{sec:results-inf}{{\mbox  {IV-B}}{13}{}{subsection.4.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Baseline policy $\pi _{\mathrm  {BL}}$ and mean experimental response $\mathrm  {EXP}_{\mathrm  {BL}}$ over five repetitions. The shaded band represents the corresponding $\pm \mathrm  {RMS}$ dispersion.}}{14}{}\protected@file@percent }
+\newlabel{fig:stage0}{{3}{14}{}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Representative information-oriented policies and physical trajectories in the broad and near-wall domains.}}{14}{}\protected@file@percent }
+\newlabel{fig:informative-policies}{{4}{14}{}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Sequential identification of $A$ and $p$ and cumulative E-optimal information obtained with the designed policies and the repeated-baseline counterfactual.}}{15}{}\protected@file@percent }
+\newlabel{fig:adjoint-convergence}{{5}{15}{}{figure.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Identified ground-effect function and propagated uncertainty after the six broad-domain experiments and after combining the broad and near-wall domains.}}{15}{}\protected@file@percent }
+\newlabel{fig:fge-quality}{{6}{15}{}{figure.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Baseline experiment replayed with the classical initialization, the DT identified using only the broad domain, and the final DT identified using the broad and near-wall domains.}}{16}{}\protected@file@percent }
+\newlabel{fig:baseline-dt}{{7}{16}{}{figure.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Model-Based Policy}{16}{}\protected@file@percent }
+\newlabel{sec:results-mb}{{\mbox  {IV-C}}{16}{}{subsection.4.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Experimental baseline and model-based policies, together with the DT prediction of $\pi _{\mathrm  {MB}}$.}}{16}{}\protected@file@percent }
+\newlabel{fig:mb-optimum}{{8}{16}{}{figure.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Performance Phase}{16}{}\protected@file@percent }
+\newlabel{sec:results-transfer}{{\mbox  {IV-D}}{16}{}{subsection.4.4}{}}
+\newlabel{sec:results-exploration}{{\mbox  {IV-D}}{16}{}{subsection.4.4}{}}
+\newlabel{sec:results-ei}{{\mbox  {IV-D}}{16}{}{subsection.4.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Intermediate reference policies $\pi _{\lambda ,i}$ between the baseline and model-based policies.}}{17}{}\protected@file@percent }
+\newlabel{fig:intermediate-policies}{{9}{17}{}{figure.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Safe Sobol policy library, basis locations, and experimentally tested local policies $\pi _{\mathbf  a,i}$.}}{17}{}\protected@file@percent }
+\newlabel{fig:sobol}{{10}{17}{}{figure.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Reward-transfer surrogate after local policy exploration.}}{17}{}\protected@file@percent }
+\newlabel{fig:exploration-transfer}{{11}{17}{}{figure.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Reward-transfer surrogate after the EI-selected physical evaluations; the star denotes the best policy $\pi _{\mathrm  {EI}}^{\star }$.}}{18}{}\protected@file@percent }
+\newlabel{fig:ei-transfer}{{12}{18}{}{figure.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Desired and mean experimental trajectories for $\pi _{\mathrm  {BL}}$, $\pi _{\mathrm  {MB}}$, and $\pi _{\mathrm  {EI}}^{\star }$.}}{18}{}\protected@file@percent }
+\newlabel{fig:ei-trajectory}{{13}{18}{}{figure.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Generalization Across Operating Conditions}{18}{}\protected@file@percent }
+\newlabel{sec:results-generalization}{{\mbox  {IV-E}}{18}{}{subsection.4.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Video-frame comparison of representative nominal-condition flights: (a) baseline policy $\pi _{\mathrm  {BL}}$, (b) model-based policy $\pi _{\mathrm  {MB}}$, and (c) best Expected-Improvement policy $\pi _{\mathrm  {EI}}^{\star }$. The overlaid curves trace the measured vehicle path.}}{19}{}\protected@file@percent }
+\newlabel{fig:real-comparison}{{14}{19}{}{figure.14}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Generalization at (a) $(z^\ast /R,\,v_x^\ast /v_h)=(2.5,0.045)$ and (b) $(1,0.113)$: PID, local model-based, transferred RT, and condition-specific EI policies.}}{19}{}\protected@file@percent }
+\newlabel{fig:generalization-trajectories}{{15}{19}{}{figure.15}{}}
+\newlabel{eq:generalized-surrogate}{{47}{19}{}{equation.47}{}}
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{EuropeanCommission2026}{1}
+\bibcite{Matus2020}{2}
+\bibcite{Carter2021}{3}
+\bibcite{Franzetti2024}{4}
+\bibcite{Cai2024}{5}
+\bibcite{Kan2019}{6}
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces Normalized reward-transfer surrogate across the nominal and two additional operating conditions.}}{20}{}\protected@file@percent }
+\newlabel{fig:generalization-reward}{{16}{20}{}{figure.16}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusions and Outlook}{20}{}\protected@file@percent }
+\newlabel{sec:conclusion}{{V}{20}{}{section.5}{}}
+\@writefile{toc}{\contentsline {section}{References}{20}{}\protected@file@percent }
+\bibcite{MPCReview2021}{7}
+\bibcite{SchenaRT2023}{8}
+\bibcite{Mendez2026}{9}
+\bibcite{PolettiRT2025}{10}
+\bibcite{Korenhof2021}{11}
+\bibcite{Wagg2025}{12}
+\bibcite{Feldbaum1960}{13}
+\bibcite{Filatov2000}{14}
+\bibcite{Mesbah2018}{15}
+\bibcite{Kennedy2001}{16}
+\bibcite{Rasmussen2006}{17}
+\bibcite{Mockus1975}{18}
+\bibcite{Forrester2007}{19}
+\bibcite{Richardson2025}{20}
+\bibcite{Mehra1974}{21}
+\bibcite{Goodwin1977}{22}
+\bibcite{Taffanel2021Lighthouse}{23}
+\bibcite{BitcrazeControllers}{24}
+\bibcite{BitcrazeFirmware}{25}
+\bibcite{CheesemanBennett1955}{26}
+\gdef \@abspage@last{21}
