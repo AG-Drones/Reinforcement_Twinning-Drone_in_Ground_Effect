@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review dashboard</title>
+<style>
+:root{--ink:#192936;--muted:#5c6972;--bg:#f3f5f6;--paper:#fff;--line:#d9e1e5;--blue:#205774;--teal:#14665c;--high:#a23635;--medium:#90610b;--del-bg:#f8d3ce;--del-ink:#86231b;--ins-bg:#c9ecd6;--ins-ink:#0d4d2b;--mine-bg:#ece4f3;--mine:#5d3b7a;--quote:#fbf8ef;--quote-line:#d8c79a}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.58 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--blue)}
+button,input,select,textarea{font:inherit}
+button,select{cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #e2aa45;outline-offset:3px}
+.wrap{max-width:1420px;margin:auto;padding:30px 28px 90px}
+header{border-top:5px solid var(--teal);padding:22px 0 12px}
+.eyebrow{font-size:12px;letter-spacing:.12em;font-weight:700;text-transform:uppercase;color:var(--teal)}
+h1{font-size:clamp(25px,3vw,36px);line-height:1.17;margin:9px 0 14px;letter-spacing:-.02em}
+h2{font-size:19px;margin:0 0 10px}
+p{margin:0 0 12px}
+.intro{max-width:1040px;font-size:16.5px}
+.small{font-size:13px;color:var(--muted)}
+.notice{border-left:3px solid var(--teal);background:#e8f1ee;padding:12px 16px;margin-top:16px}
+.notice ol{margin:8px 0 0;padding-left:20px;font-size:14px}.notice li{margin:3px 0}
+.warning{border-left-color:var(--high);background:#fbeceb;margin:14px 0 0}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin-top:10px;font-size:13px;color:var(--muted)}
+.legend del,.legend ins{font:12px/1.5 ui-monospace,Consolas,monospace;padding:1px 5px}
+.summary-grid{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:16px;margin:20px 0}
+.panel{border:1px solid var(--line);border-radius:10px;padding:18px 20px;background:var(--paper)}
+.panel ul{margin:6px 0 0;padding-left:20px;font-size:14px}.panel li{margin:5px 0}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:18px 0}
+.stat{background:var(--paper);border:1px solid var(--line);padding:12px 16px;border-radius:8px}
+.stat b{font-size:26px;display:block;line-height:1.2}
+.stat span{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.toolbar{position:sticky;top:0;z-index:10;background:#f3f5f6f2;backdrop-filter:blur(9px);padding:12px 0;border-bottom:1px solid var(--line)}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;align-items:end}
+.filters>div:first-child{grid-column:span 2}
+.filters label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+input,select,textarea{width:100%;border:1px solid #bdcbd2;border-radius:5px;background:white;color:var(--ink);padding:7px 9px}
+input,select{height:36px}
+input[type=checkbox]{width:auto;height:auto;margin:0 6px 0 0}
+.check{display:flex !important;align-items:center;font-size:13px !important;white-space:nowrap;height:36px;text-transform:none !important;letter-spacing:0 !important;font-weight:400 !important}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+button{border:1px solid var(--blue);border-radius:5px;background:var(--blue);color:white;padding:6px 12px;font-size:13px}
+button.secondary{background:white;color:var(--blue)}
+button.primary{background:var(--teal);border-color:var(--teal);font-weight:650}
+button.warn{background:#fff4e0;border-color:#c98a1b;color:#7a4f00}
+button:hover{filter:brightness(.95)}
+#storage-status{font-size:12px;color:var(--muted);margin-left:auto;max-width:430px;text-align:right}
+#shown{margin:16px 0 10px;color:var(--muted);font-size:13px}
+.group-head{margin:26px 0 8px;font-size:14px;font-weight:800;letter-spacing:.04em;color:var(--teal)}
+.item{border:1px solid var(--line);border-radius:9px;background:white;margin-bottom:12px;overflow:hidden;scroll-margin-top:170px}
+.item[data-decision="Apply"],.item[data-decision="Apply with edits"]{border-left:5px solid var(--teal)}
+.item[data-decision="Keep as is"]{border-left:5px solid #8b979e}
+.item[data-decision="Discuss"]{border-left:5px solid #c98a1b}
+.item[data-decision="Later"]{border-left:5px solid #7d8fb3}
+.item summary{cursor:pointer;list-style:none;display:flex;gap:12px;align-items:baseline;padding:13px 18px}
+.item summary::-webkit-details-marker{display:none}
+.item>details>summary:before{content:'+';color:var(--teal);font-size:20px;width:13px;flex-shrink:0}
+.item>details[open]>summary:before{content:'\2212'}
+.line-chip{font:600 12px/1 ui-monospace,Consolas,monospace;background:#e9eef1;border-radius:4px;padding:4px 7px;white-space:nowrap;min-width:70px;text-align:center}
+.item-id{color:var(--teal);font-size:12px;font-weight:800;white-space:nowrap}
+.item-title{font-size:16px;font-weight:650;line-height:1.4}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.badge{font-size:11px;background:#edf1f4;border-radius:4px;padding:2px 7px;font-weight:600;color:#465c6b}
+.badge.mine{background:var(--mine-bg);color:var(--mine)}
+.badge.kind{background:#e5f2ec;color:var(--teal)}
+.badge.kind.instr{background:#fff2d8;color:var(--medium)}
+.badge.kind.ren{background:#e6ecf7;color:#2d4f7c}
+.badge.who{background:#e8eef6;color:#2d4f7c}
+.badge.grade{font-weight:800}.badge.g-A{background:#fbe3e1;color:var(--high)}.badge.g-B{background:#fff2d8;color:var(--medium)}.badge.g-C{background:#edf1f4;color:#465c6b}
+.body{padding:0 20px 16px}
+.remark{border-left:3px solid var(--quote-line);background:var(--quote);border-radius:0 6px 6px 0;padding:8px 12px;margin:0 0 10px}
+.rhead{font-size:13px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+.rid{font-weight:800;color:var(--ink)}
+.rstatus{font-size:11px;font-weight:700;border-radius:4px;padding:1px 6px;background:#edf1f4;color:#465c6b}
+.rstatus.s-Open,.rstatus.s-A{background:#fbeceb;color:var(--high)}.rstatus.s-Partly,.rstatus.s-B{background:#fff2d8;color:var(--medium)}
+.rtext{white-space:pre-wrap;font-size:14.5px;margin:4px 0 0}
+.why{font-size:14px;background:#f4f7f8;border-radius:6px;padding:9px 12px;margin:0 0 12px}
+.why b{color:var(--teal)}
+.src{margin:0 0 12px;border:1px dashed #bdcbd2;border-radius:6px;background:#f6f8f9}
+.src summary{padding:6px 12px;font-size:12.5px;color:var(--muted);display:block}
+.src summary:before{content:'\25B8\00a0'}.src[open] summary:before{content:'\25BE\00a0'}
+.src pre,.extra{font:12px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;word-break:break-word;margin:0;padding:8px 12px}
+.extra{background:#f6f8f9;border:1px dashed #bdcbd2;border-radius:6px;margin:0 0 12px}
+.edit{margin:0 0 12px}
+.edit.excluded .diff{opacity:.4}
+.edit-head{display:flex;gap:12px;align-items:center;font-size:12.5px;color:var(--muted);margin:0 0 5px;flex-wrap:wrap}
+.edit-head .lbl{font-weight:700;color:var(--ink)}
+.edit-head label{display:flex;align-items:center;cursor:pointer}
+.edit-head button{padding:3px 9px;font-size:12px}
+.diff{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.col-head{font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;padding:5px 12px;border-bottom:1px solid var(--line);background:#f6f8f9;color:var(--muted)}
+.col+.col{border-left:1px solid var(--line)}
+.tex{font:12.6px/1.62 ui-monospace,Consolas,"Cascadia Mono",monospace;padding:10px 12px;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}
+del{background:var(--del-bg);color:var(--del-ink);text-decoration:line-through;text-decoration-color:#c0584c;border-radius:2px}
+ins{background:var(--ins-bg);color:var(--ins-ink);text-decoration:none;border-radius:2px}
+.item[data-decision="Keep as is"] .col.newcol{opacity:.45}
+.editor{margin-top:8px}
+.editor textarea{font:12.6px/1.55 ui-monospace,Consolas,monospace;min-height:120px;resize:vertical}
+.editor .row{display:flex;gap:8px;align-items:center;margin-top:6px;font-size:12.5px;color:var(--muted)}
+.edited-badge{font-size:11px;font-weight:700;color:var(--mine);background:var(--mine-bg);border-radius:4px;padding:1px 6px}
+.decision{display:grid;grid-template-columns:auto 175px 1fr 1fr;gap:10px;align-items:start;padding:9px 18px;border-top:1px solid var(--line);background:#f9fbfc}
+.decision label{font-size:12px;color:var(--muted);padding-top:7px}
+.decision select{height:32px;padding:2px 7px;font-size:13px}
+.decision textarea{min-height:34px;height:34px;padding:6px 8px;font-size:13px;resize:vertical}
+.decision[data-status="Open"] select{border-color:#c98a1b}
+.notes-list li{margin:6px 0}
+@media (max-width:900px){.summary-grid,.stats{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.filters>div:first-child{grid-column:span 2}.diff{grid-template-columns:1fr}.col+.col{border-left:0;border-top:1px solid var(--line)}.decision{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="wrap">
+<div id="server-warning" class="notice warning" hidden><strong>This page is not connected to the local server.</strong> Your decisions stay in this browser only, and <em>Save instructions</em> will download the file instead of writing it to the folder. Close this tab and start the dashboard with <code>start_dashboard.bat</code> in the folder of this round (or <code>python serve_dashboard.py</code> from a terminal).</div>
+<header>
+<div class="eyebrow" id="eyebrow"></div>
+<h1 id="title"></h1>
+<p class="intro" id="intro"></p>
+<p class="small" id="scope"></p>
+<div class="notice"><strong>How to use this page</strong><ol id="howto"></ol>
+<div class="legend"><span><del>removed</del> from the current text</span><span><ins>added</ins> by the proposal</span><span id="legend-mine"><span class="badge mine">Your wording</span> marks cards that touch sentences you wrote or edited; the changes there are kept to a few words.</span></div></div>
+</header>
+<div class="summary-grid">
+<section class="panel"><h2>What this round covers</h2><ul id="covers"></ul></section>
+<section class="panel"><h2>Please look at these first</h2><ul id="notes" class="notes-list"></ul></section>
+<section class="panel"><h2>Everything applied</h2><p style="font-size:14px" id="proposal-note"></p><p class="small" id="typeset-note"></p></section>
+</div>
+<div class="stats">
+<div class="stat"><b id="s-total">0</b><span>Cards</span></div>
+<div class="stat"><b id="s-open">0</b><span>Undecided</span></div>
+<div class="stat"><b id="s-apply">0</b><span>Apply (incl. edits)</span></div>
+<div class="stat"><b id="s-keep">0</b><span>Keep as is</span></div>
+<div class="stat"><b id="s-disc">0</b><span>Discuss</span></div>
+<div class="stat"><b id="s-later">0</b><span>Later</span></div>
+</div>
+<section class="toolbar" aria-label="Review controls">
+<div class="filters">
+<div><label for="search">Search</label><input id="search" type="search" placeholder="Card, remark ID, word or source text&hellip;"></div>
+<div><label for="f-group">Place</label><select id="f-group"><option value="">All places</option></select></div>
+<div id="w-source"><label for="f-source">Raised by</label><select id="f-source"><option value="">Anyone</option></select></div>
+<div id="w-grade"><label for="f-grade">Priority</label><select id="f-grade"><option value="">All priorities</option></select></div>
+<div><label for="f-status">Decision</label><select id="f-status"><option value="">All decisions</option></select></div>
+<div><label for="f-kind">Card type</label><select id="f-kind"><option value="">All cards</option><option value="edit">Text edits</option><option value="rename">Renames</option><option value="instruction">Suggestion only</option></select></div>
+<div><label for="f-view">Columns</label><select id="f-view"><option value="both">Side by side</option><option value="new">Proposed only</option></select></div>
+<div id="w-mine"><label class="check"><input type="checkbox" id="f-mine">Your wording only</label></div>
+</div>
+<div class="actions">
+<button class="secondary" id="expand">Expand all</button>
+<button class="secondary" id="collapse">Collapse all</button>
+<button class="warn" id="accept-rest">Apply all undecided edits and renames</button>
+<button class="primary" id="save-md">Save instructions (.md)</button>
+<button class="secondary" id="export">Download decisions (.json)</button>
+<span id="storage-status">Loading&hellip;</span>
+</div>
+</section>
+<div id="shown"></div>
+<main id="items"></main>
+</div>
+<script>
+const review = /*REVIEW_JSON*/null;
+const M = review.metadata, F = M.files;
+const choices = ['Open','Apply','Apply with edits','Keep as is','Discuss','Later'];
+const choicesInstr = ['Open','Apply','Keep as is','Discuss','Later'];
+const HASH = M.manuscript_hash;
+const LS_KEY = 'review_' + M.id + '_' + HASH.slice(0,12);
+const ACCEPT = 'Apply all undecided edits and renames';
+const byId = {}; review.items.forEach(i=>byId[i.id]=i);
+const $ = id => document.getElementById(id);
+let decisions = {};
+let serverReady = false;
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function linkify(s){ return esc(s).replace(/\[\[(C\d{2,3})\]\]/g,(m,id)=>`<a href="#${id}" class="card-link">${id}</a>`); }
+function plain(s){ return String(s).replace(/\[\[(C\d{2,3})\]\]/g,'$1'); }
+function state(id){ if(!decisions[id]) decisions[id]={status:'Open',note:'',reply:'',updated:0}; return decisions[id]; }
+function allowed(item){ return item.kind==='instruction' ? choicesInstr : choices; }
+function validStatus(id){ const s=state(id).status; return allowed(byId[id]).includes(s)?s:'Open'; }
+function entry(id,i){ const e=state(id).edits; return e && e[String(i)] ? e[String(i)] : null; }
+function editedText(id,i){ const e=entry(id,i); return e && typeof e.text==='string' ? e.text : null; }
+function included(id,i){ const e=entry(id,i); return !(e && e.include===false); }
+function currentNew(item,i){ const t=editedText(item.id,i); return t===null ? item.edits[i].new : t; }
+function modified(item){ return item.edits.some((_,i)=>editedText(item.id,i)!==null || !included(item.id,i)); }
+function isMine(item){ return item.flags.some(f=>/^Your/.test(f)); }
+function tokens(s){ return s.replace(/\n/g,' \n ').split(/[ \t]+/).filter(t=>t.length); }
+function diff(a,b){
+  const n=a.length,m=b.length, W=m+1, L=new Int32Array((n+1)*(m+1));
+  for(let i=n-1;i>=0;i--) for(let j=m-1;j>=0;j--)
+    L[i*W+j] = a[i]===b[j] ? L[(i+1)*W+j+1]+1 : Math.max(L[(i+1)*W+j], L[i*W+j+1]);
+  const out=[]; let i=0,j=0;
+  while(i<n && j<m){
+    if(a[i]===b[j]){out.push(['=',a[i]]);i++;j++;}
+    else if(L[(i+1)*W+j]>=L[i*W+j+1]){out.push(['-',a[i]]);i++;}
+    else {out.push(['+',b[j]]);j++;}
+  }
+  while(i<n) out.push(['-',a[i++]]); while(j<m) out.push(['+',b[j++]]);
+  return out;
+}
+function renderSide(ops, side){
+  const keep = side==='old' ? '-' : '+';
+  const tag = side==='old' ? 'del' : 'ins';
+  let html='', run=[];
+  const flush=()=>{ if(run.length){ html+='<'+tag+'>'+run.map(t=>t==='\n'?'\n':esc(t)).join(' ').replace(/ \n /g,'\n')+'</'+tag+'> '; run=[]; } };
+  for(const [op,t] of ops){
+    if(op===keep){ run.push(t); continue; }
+    if(op!=='='){ continue; }
+    flush(); html += (t==='\n' ? '\n' : esc(t)+' ');
+  }
+  flush();
+  return html.replace(/ \n/g,'\n').replace(/\n /g,'\n');
+}
+function statusClass(s){ return 's-'+String(s).split(' ')[0]; }
+function lineWord(l){ return (/[\u2013,]/.test(l)?'lines ':'line ')+l; }
+function option(sel,value,text){ const o=document.createElement('option'); o.value=value; o.textContent=text||value; sel.appendChild(o); }
+function build(){
+  const main=$('items'); let lastGroup=null; const groups=[]; const who=new Set();
+  const hasGrades=Object.keys(M.grades).length>0, hasRen=M.n_renames>0;
+  for(const item of review.items){
+    if(item.group!==lastGroup){ const h=document.createElement('div'); h.className='group-head'; h.dataset.group=item.group; h.textContent=item.group; main.appendChild(h); lastGroup=item.group; groups.push(item.group); }
+    item.reviewers.forEach(w=>who.add(w));
+    const art=document.createElement('article'); art.className='item'; art.id=item.id; art.dataset.group=item.group;
+    const ren=item.kind==='rename';
+    const kindLabel = ren ? ('Rename \u00b7 '+item.rename.count+' place'+(item.rename.count>1?'s':'')) : item.kind==='edit' ? (item.edits.length+' text edit'+(item.edits.length>1?'s':'')) : 'Suggestion only';
+    const badges=(item.grade?[`<span class="badge grade g-${esc(item.grade)}">${esc(item.grade)}</span>`]:[])
+      .concat([`<span class="badge kind${item.kind==='instruction'?' instr':ren?' ren':''}">${kindLabel}</span>`])
+      .concat([...new Set(item.remark_ids)].map(r=>`<span class="badge who">${esc(r)}</span>`))
+      .concat(item.flags.map(f=>`<span class="badge mine">${linkify(f)}</span>`)).join('');
+    const remarks=item.remarks.map(r=>`<div class="remark"><div class="rhead"><span class="rid">${esc(r.rid)}</span><span>${esc(r.who)}</span>${r.anchor?`<span>\u00b7 ${esc(r.anchor)}</span>`:''}${r.status?`<span class="rstatus ${statusClass(r.status)}">${esc(r.status)}</span>`:''}</div><div class="rtext">${linkify(r.text)}</div></div>`).join('');
+    const sources=item.sources.map(s=>`<details class="src"><summary>${esc(s.label)}</summary><pre>${esc(s.text)}</pre></details>`).join('');
+    const edits=item.edits.map((e,i)=>`<div class="edit" data-i="${i}"><div class="edit-head"><span class="lbl">${ren?'Rename':'Edit '+(i+1)+' of '+item.edits.length}</span><span>${ren?esc(e.lines):esc(lineWord(e.lines))}</span><label${ren?' hidden':''}><input type="checkbox" class="inc" checked>apply this edit</label><button class="secondary toggle-edit">${ren?'Change the symbol':'Edit text'}</button><span class="edited-badge" hidden>edited by you</span></div>
+<div class="diff"><div class="col oldcol"><div class="col-head">${ren?'Current':'Current \u00b7 '+esc(M.manuscript)}</div><div class="tex old"></div></div><div class="col newcol"><div class="col-head">Proposed</div><div class="tex new"></div></div></div>
+<div class="editor" hidden><textarea spellcheck="false" aria-label="Proposed text, ${item.id} edit ${i+1}"></textarea><div class="row"><button class="secondary reset">Reset to proposal</button><span>Saved as you type; the card becomes <em>Apply with edits</em>.</span></div></div></div>`).join('');
+    const prop = item.kind!=='instruction' ? (item.why?`<p class="why"><b>Proposal.</b> ${linkify(item.why)}</p>`:'') : `<p class="why"><b>Suggestion.</b> ${linkify(item.suggestion).replace(/\n/g,'<br>')}</p>`;
+    const extra = item.extra ? `<div class="small">Applying this card also appends this entry to ${esc(M.bib)}:</div><div class="extra">${esc(item.extra)}</div>` : '';
+    art.innerHTML=`<details open><summary><span class="line-chip">${ren?'rename':(item.lines?'l. '+esc(item.lines):'\u2014')}</span><span class="item-id">${item.id}</span><div><div class="item-title">${esc(item.title)}</div><div class="badges">${badges}</div></div></summary>
+<div class="body">${remarks}${prop}${sources}${extra}${edits}</div></details>
+<div class="decision" data-status="Open"><label for="decision-${item.id}">Decision</label><select id="decision-${item.id}">${allowed(item).map(c=>`<option>${c}</option>`).join('')}</select><textarea class="note" id="note-${item.id}" placeholder="Instruction or note for Claude (optional)"></textarea><textarea class="reply" id="reply-${item.id}" placeholder="Reply to whoever made the remark (optional)"></textarea></div>`;
+    main.appendChild(art);
+    const sel=art.querySelector('select'), note=art.querySelector('.note'), reply=art.querySelector('.reply');
+    sel.addEventListener('change',()=>setStatus(item.id, sel.value));
+    note.addEventListener('input',()=>{ const s=state(item.id); s.note=note.value; s.updated=Date.now(); persist(); });
+    reply.addEventListener('input',()=>{ const s=state(item.id); s.reply=reply.value; s.updated=Date.now(); persist(); });
+    art.querySelectorAll('.edit').forEach(box=>{
+      const i=Number(box.dataset.i), ed=box.querySelector('.editor'), ta=ed.querySelector('textarea');
+      box.querySelector('.toggle-edit').addEventListener('click',()=>{ ed.hidden=!ed.hidden; if(!ed.hidden){ ta.value=currentNew(item,i); ta.focus(); } });
+      ta.addEventListener('input',()=>setEdit(item,i,{text:ta.value}));
+      ed.querySelector('.reset').addEventListener('click',()=>{ ta.value=item.edits[i].new; setEdit(item,i,{text:item.edits[i].new}); });
+      box.querySelector('.inc').addEventListener('change',e=>setEdit(item,i,{include:e.target.checked}));
+    });
+  }
+  groups.forEach(g=>option($('f-group'),g));
+  choices.forEach(c=>option($('f-status'),c));
+  [...who].sort().forEach(w=>option($('f-source'),w));
+  $('w-source').hidden = who.size<2;
+  Object.keys(M.grade_labels).forEach(g=>option($('f-grade'),g,g+' \u00b7 '+M.grade_labels[g]));
+  $('w-grade').hidden = !hasGrades;
+  const anyMine=review.items.some(isMine); $('w-mine').hidden=!anyMine; $('legend-mine').hidden=!anyMine;
+  document.title=M.label; $('eyebrow').textContent=M.label; $('title').textContent=M.title;
+  const nE=review.items.filter(i=>i.kind==='edit').length, nI=review.items.filter(i=>i.kind==='instruction').length;
+  $('intro').textContent=(M.intro?M.intro+' ':'')+`This round has ${review.items.length} cards: ${nE} with text edits (${M.n_edits} edits)`+(hasRen?`, ${M.n_renames} rename${M.n_renames>1?'s':''} (${M.n_places} place${M.n_places>1?'s':''})`:'')+` and ${nI} with a suggestion only.`;
+  $('scope').textContent=`Current text: ${M.manuscript} (SHA-256 ${HASH.slice(0,12)}\u2026). Everything applied: ${F.proposal} (SHA-256 ${M.proposal_hash.slice(0,12)}\u2026), in this folder.`;
+  const how=[`<b>Edit cards</b> change the text of <code>${esc(M.manuscript)}</code>: the current text is on the left, with removed words struck through in red, and the proposed text on the right, with added words in green. Each card shows the remarks that it answers, word for word.`];
+  if(hasRen) how.push(`<b>Rename cards</b> change one symbol or word everywhere: the left box is the current one, the right box the proposed one, and the line above them says in how many places and on which lines. <em>Change the symbol</em> lets you type another. Renames are applied last, also inside the texts proposed on the other cards.`);
+  how.push(`<b>Suggestion cards</b> carry a question or a list of options and rely on your note.`);
+  if(hasGrades) how.push('Each card has a priority: '+Object.keys(M.grade_labels).map(g=>`<span class="badge grade g-${esc(g)}">${esc(g)}</span> ${esc(M.grade_labels[g])}`).join('; ')+'. The <em>Priority</em> filter shows one level at a time.');
+  how.push(`Set a decision for each card: <em>Apply</em>, <em>Keep as is</em>, <em>Discuss</em> or <em>Later</em>. <em>Edit text</em> lets you rewrite a proposed text, and the tick box leaves one edit of a card out; either marks the card <em>Apply with edits</em>. Use the note for instructions to Claude.`);
+  how.push(`Everything is saved in this folder as you go. When done, press <strong>Save instructions (.md)</strong>: it writes <code>${esc(F.instructions)}</code>, and you tell Claude that the instructions are saved. <code>${esc(M.manuscript)}</code> is not changed until the instructions are applied. <b>Please do not edit the manuscript while this round is open</b>, or say so if you do: the cards are tied to the version named above.`);
+  $('howto').innerHTML=how.map(h=>`<li>${h}</li>`).join('');
+  const gr=M.grades;
+  $('covers').innerHTML=Object.entries(M.groups).map(([g,n])=>`<li><a href="#" data-g="${esc(g)}" class="gl">${esc(g)}</a>: ${n} card${n>1?'s':''}</li>`).join('')+(hasGrades?`<li>By priority: ${Object.keys(M.grade_labels).map(g=>g+' '+(gr[g]||0)).join(', ')}.</li>`:'');
+  document.querySelectorAll('.gl').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); $('f-group').value=a.dataset.g; applyFilters(); $('items').scrollIntoView(); }));
+  $('notes').innerHTML=M.notes.length?M.notes.map(n=>`<li>${linkify(n)}</li>`).join(''):'<li>Nothing in particular: the cards are in the order of the manuscript.</li>';
+  $('proposal-note').innerHTML=M.typeset
+    ? `<code>${esc(F.proposal_pdf)}</code> (this folder) is the manuscript with every card applied: read it there as it would appear. <code>${esc(F.diff_pdf)}</code> marks the changes against the current file. <code>${esc(F.proposal)}</code> is its source.`
+    : `<code>${esc(F.proposal)}</code> (this folder) is the manuscript with every card applied.`;
+  $('typeset-note').textContent=M.typeset_note||'';
+  $('accept-rest').textContent=ACCEPT;
+}
+function renderEdits(item){
+  const el=$(item.id);
+  el.querySelectorAll('.edit').forEach(box=>{
+    const i=Number(box.dataset.i), nw=currentNew(item,i), old=item.edits[i].old;
+    const ops=diff(tokens(old), tokens(nw));
+    box.querySelector('.tex.old').innerHTML=old.trim()?renderSide(ops,'old'):'<em>(nothing)</em>';
+    box.querySelector('.tex.new').innerHTML=nw.trim()?renderSide(ops,'new'):'<em>(deleted)</em>';
+    box.querySelector('.edited-badge').hidden = editedText(item.id,i)===null;
+    const inc=included(item.id,i); box.querySelector('.inc').checked=inc; box.classList.toggle('excluded',!inc);
+  });
+}
+function refreshItem(item){
+  const el=$(item.id), st=validStatus(item.id), s=state(item.id);
+  el.dataset.decision=st; el.querySelector('select').value=st; el.querySelector('.decision').dataset.status=st;
+  const note=el.querySelector('.note'); if(document.activeElement!==note) note.value=s.note||'';
+  const reply=el.querySelector('.reply'); if(document.activeElement!==reply) reply.value=s.reply||'';
+  renderEdits(item);
+}
+function setStatus(id,v){ const s=state(id); s.status=v; s.updated=Date.now(); refreshItem(byId[id]); persist(); }
+function setEdit(item,i,patch){
+  const s=state(item.id); s.edits=s.edits||{}; const k=String(i);
+  const e=Object.assign({}, s.edits[k]||{}, patch);
+  if(e.text!==undefined && e.text===item.edits[i].new) delete e.text;
+  if(e.include===true) delete e.include;
+  if(Object.keys(e).length) s.edits[k]=e; else delete s.edits[k];
+  if(!Object.keys(s.edits).length) delete s.edits;
+  const mod=modified(item);
+  if(mod && (s.status==='Open'||s.status==='Apply')) s.status='Apply with edits';
+  if(!mod && s.status==='Apply with edits') s.status='Apply';
+  s.updated=Date.now(); refreshItem(item); persist();
+}
+function updateStats(){
+  const c={}; choices.forEach(x=>c[x]=0);
+  review.items.forEach(i=>c[validStatus(i.id)]++);
+  $('s-total').textContent=review.items.length;
+  $('s-open').textContent=c.Open;
+  $('s-apply').textContent=c.Apply+c['Apply with edits'];
+  $('s-keep').textContent=c['Keep as is'];
+  $('s-disc').textContent=c.Discuss;
+  $('s-later').textContent=c.Later;
+}
+function applyFilters(){
+  const q=$('search').value.trim().toLowerCase(), g=$('f-group').value, w=$('f-source').value, gd=$('f-grade').value, s=$('f-status').value, k=$('f-kind').value, mine=$('f-mine').checked;
+  let n=0; const vis=new Set();
+  for(const item of review.items){
+    const st=state(item.id);
+    const hay=(item.id+' '+item.title+' '+item.remark_ids.join(' ')+' '+item.remarks.map(r=>r.anchor+' '+r.text).join(' ')+' '+item.why+' '+item.suggestion+' '+item.edits.map((e,i)=>e.old+' '+currentNew(item,i)).join(' ')+' '+(st.note||'')+' '+(st.reply||'')).toLowerCase();
+    const show=(!q||hay.includes(q))&&(!g||item.group===g)&&(!w||item.reviewers.includes(w))&&(!gd||item.grade===gd)&&(!s||validStatus(item.id)===s)&&(!k||item.kind===k)&&(!mine||isMine(item));
+    $(item.id).hidden=!show; if(show){n++; vis.add(item.group);}
+  }
+  document.querySelectorAll('.group-head').forEach(h=>h.hidden=!vis.has(h.dataset.group));
+  $('shown').textContent=`Showing ${n} of ${review.items.length} cards.`;
+  const newOnly=$('f-view').value==='new';
+  document.querySelectorAll('.diff').forEach(d=>{ d.style.gridTemplateColumns=newOnly?'1fr':''; d.querySelector('.oldcol').hidden=newOnly; });
+}
+// ---------------- persistence
+let saveTimer=null, writing=false, again=false;
+function persist(){
+  updateStats();
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(decisions)); }catch(e){}
+  if(!serverReady) return;
+  clearTimeout(saveTimer); $('storage-status').textContent='Saving\u2026';
+  saveTimer=setTimeout(saveServer,300);
+}
+async function saveServer(){
+  if(writing){ again=true; return; } writing=true;
+  try{
+    const r=await fetch('/api/decisions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({manuscript_sha256:HASH,decisions})});
+    if(!r.ok) throw new Error(r.status);
+    $('storage-status').textContent=`Saved to ${F.decisions} in this folder.`;
+  }catch(e){ $('storage-status').textContent='Disk save failed; decisions kept in this browser. Use Download decisions.'; }
+  finally{ writing=false; if(again){ again=false; saveServer(); } }
+}
+function loadLocal(){ try{ const d=JSON.parse(localStorage.getItem(LS_KEY)||'{}'); if(d && typeof d==='object') for(const [id,e] of Object.entries(d)){ if(byId[id]) decisions[id]=e; } }catch(e){} }
+async function loadServer(){
+  if(!/^https?:$/.test(location.protocol)) throw new Error('file');
+  const r=await fetch('/api/decisions',{cache:'no-store'}); if(!r.ok) throw new Error('server');
+  const data=await r.json(); if(data.manuscript_sha256!==HASH) throw new Error('snapshot');
+  for(const [id,e] of Object.entries(data.decisions||{})){
+    if(!byId[id] || !choices.includes(e.status)) continue;
+    if(!decisions[id] || Number(e.updated||0) >= Number(decisions[id].updated||0)) decisions[id]=e;
+  }
+}
+// ---------------- instructions
+function fence(t,lang){ const f=t.includes('```')?'~~~~':'```'; return f+(lang||'')+'\n'+t+'\n'+f+'\n\n'; }
+function instructions(){
+  const now=new Date().toISOString().replace('T',' ').slice(0,16)+' UTC';
+  const c={}; review.items.forEach(i=>{const s=validStatus(i.id); c[s]=(c[s]||0)+1;});
+  let md=`# ${M.label} \u2014 instructions\n\nGenerated ${now} from ${F.page}.\n\nManuscript: \`${M.manuscript}\`, SHA-256 \`${HASH}\`.\n\n`;
+  md+=`Decisions: ${choices.map(s=>`${s} ${c[s]||0}`).join(', ')}.\n\n`;
+  md+=`How to apply. **Edits**: for each card marked **Apply** or **Apply with edits**, replace every edit marked *apply* (its OLD block occurs exactly once in the manuscript snapshot above) with its NEW block; edits marked *not applied* stay as they are. **Renames**: after all the edits, apply the substitutions of every rename card marked *apply*, in card order, to the whole manuscript (the substitutions are stored with the card in ${F.review}); if the NEW symbol was edited by the reviewer, use that symbol instead. Cards with a suggestion only: follow the note, or the stated default if there is no note. **Keep as is**: no change. **Discuss**, **Later** and **Open**: nothing applied now; answer the note. If the manuscript has changed since the snapshot, locate each OLD block and report any that no longer matches instead of forcing it.\n\n`;
+  let group=null;
+  for(const item of review.items){
+    if(item.group!==group){ md+=`# ${item.group}\n\n`; group=item.group; }
+    const s=validStatus(item.id), st=state(item.id);
+    md+=`## ${item.id} \u00b7 ${item.title}${item.lines?` (${lineWord(item.lines)})`:''} \u2014 ${s}\n\n`;
+    if(item.remarks.length) md+=`Remarks: ${item.remarks.map(r=>`${r.rid} (${r.who})`).join(', ')}.\n\n`;
+    if(item.flags.length) md+=`Flag: ${plain(item.flags.join(', '))}.\n\n`;
+    if(st.note && st.note.trim()) md+=`**Note:** ${st.note.trim()}\n\n`;
+    if(st.reply && st.reply.trim()) md+=`**Reply:** ${st.reply.trim()}\n\n`;
+    if(item.kind==='rename'){
+      const e=item.edits[0], nw=currentNew(item,0), ed=editedText(item.id,0)!==null;
+      if(s==='Apply'||s==='Apply with edits'){ md+=`### Rename (${e.lines}) \u2014 apply\n\nCURRENT symbol:\n\n`+fence(e.old,'tex')+`NEW symbol${ed?' (edited by the reviewer)':''}:\n\n`+fence(nw,'tex'); }
+      else if(s==='Discuss'){ md+=`### Rename (${e.lines}) \u2014 for discussion, not applied\n\nProposed NEW symbol${ed?' (edited by the reviewer)':''}:\n\n`+fence(nw,'tex'); }
+      else if(s==='Keep as is'){ md+='Keep the current symbol.\n\n'; }
+      else if(s==='Later'){ md+='Later; not applied now.\n\n'; }
+      else { md+='Undecided; not applied.\n\n'; }
+      continue;
+    }
+    if(item.kind==='instruction'){
+      md+=`Suggestion: ${plain(item.suggestion)}\n\n`;
+      continue;
+    }
+    if(s==='Apply'||s==='Apply with edits'||s==='Discuss'){
+      item.edits.forEach((e,i)=>{
+        const inc=included(item.id,i), nw=currentNew(item,i), ed=editedText(item.id,i)!==null;
+        if(s==='Discuss'){ md+=`### Edit ${i+1} of ${item.edits.length} (${lineWord(e.lines)}) \u2014 for discussion, not applied\n\nProposed NEW${ed?' (edited by the reviewer)':''}:\n\n`+fence(nw,'tex'); return; }
+        if(!inc){ md+=`### Edit ${i+1} of ${item.edits.length} (${lineWord(e.lines)}) \u2014 not applied\n\n`; return; }
+        md+=`### Edit ${i+1} of ${item.edits.length} (${lineWord(e.lines)}) \u2014 apply\n\nOLD:\n\n`+fence(e.old,'tex')+`NEW${ed?' (edited by the reviewer)':''}:\n\n`+fence(nw.trim()?nw:'% (delete the OLD block)','tex');
+      });
+      if(item.extra && s!=='Discuss') md+=`Also append to ${M.bib}:\n\n`+fence(item.extra,'bib');
+    } else if(s==='Keep as is'){ md+='Keep the current text.\n\n'; }
+    else if(s==='Later'){ md+='Later; not applied now.\n\n'; }
+    else { md+='Undecided; not applied.\n\n'; }
+  }
+  const replies={};
+  for(const item of review.items){ const r=(state(item.id).reply||'').trim(); if(!r) continue;
+    (item.reviewers.length?item.reviewers:['(no source)']).forEach(w=>{ (replies[w]=replies[w]||[]).push(`- **${item.remark_ids.join(', ')||item.id}** (${item.id}, ${validStatus(item.id)}): ${r}`); }); }
+  md+='# Replies\n\n';
+  const ks=Object.keys(replies);
+  if(!ks.length) md+='No replies written.\n';
+  ks.forEach(w=>{ md+=`## ${w}\n\n`+replies[w].join('\n')+'\n\n'; });
+  return md;
+}
+async function saveInstructions(){
+  const md=instructions(); const st=$('storage-status');
+  try{
+    if(!serverReady) throw new Error('no server');
+    const r=await fetch('/api/instructions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({manuscript_sha256:HASH,markdown:md})});
+    if(!r.ok) throw new Error(r.status);
+    st.textContent=`Instructions written to ${F.instructions} in this folder. Tell Claude they are saved.`;
+  }catch(e){
+    download(F.instructions, md, 'text/markdown');
+    st.textContent=`The local server is not running, so ${F.instructions} was downloaded. Move it to the folder of this round.`;
+  }
+}
+function download(name,text,type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500); }
+// ---------------- wiring
+function wire(){
+  ['search','f-group','f-source','f-grade','f-status','f-kind','f-view','f-mine'].forEach(id=>$(id).addEventListener('input',applyFilters));
+  $('expand').onclick=()=>document.querySelectorAll('.item>details').forEach(d=>d.open=true);
+  $('collapse').onclick=()=>document.querySelectorAll('.item>details').forEach(d=>d.open=false);
+  let armed=null; const acc=$('accept-rest');
+  acc.onclick=()=>{
+    if(!armed){ acc.textContent='Click again to confirm'; armed=setTimeout(()=>{armed=null; acc.textContent=ACCEPT;},4000); return; }
+    clearTimeout(armed); armed=null; acc.textContent=ACCEPT;
+    for(const item of review.items){ if(item.kind!=='instruction' && validStatus(item.id)==='Open'){ const s=state(item.id); s.status=modified(item)?'Apply with edits':'Apply'; s.updated=Date.now(); refreshItem(item);} }
+    persist(); applyFilters();
+  };
+  $('save-md').onclick=saveInstructions;
+  $('export').onclick=()=>download(F.decisions.replace('.json','_export.json'), JSON.stringify({manuscript_sha256:HASH,decisions},null,2),'application/json');
+  window.addEventListener('pagehide',()=>{ if(serverReady) navigator.sendBeacon('/api/decisions', new Blob([JSON.stringify({manuscript_sha256:HASH,decisions})],{type:'application/json'})); });
+}
+build(); wire(); loadLocal();
+review.items.forEach(refreshItem); updateStats(); applyFilters();
+loadServer().then(()=>{ serverReady=true; review.items.forEach(refreshItem); updateStats(); applyFilters(); $('storage-status').textContent=`Connected. Decisions are saved to ${F.decisions} in this folder.`; persist(); })
+.catch(()=>{ $('server-warning').hidden=false; $('storage-status').textContent='Browser-only saving. Start the dashboard with start_dashboard.bat to save in the folder.'; });
+</script>
+</body>
+</html>

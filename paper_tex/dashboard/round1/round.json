@@ -1,0 +1,11 @@
+{
+ "id": "round1",
+ "port": 8765,
+ "review": "review_round1.json",
+ "page": "review_round1.html",
+ "decisions": "review_decisions_round1.json",
+ "instructions": "review_apply_instructions_round1.md",
+ "proposal": "main_round1_proposal.tex",
+ "proposal_pdf": "main_round1_proposal.pdf",
+ "diff_pdf": "main_round1_proposal_diff.pdf"
+}
