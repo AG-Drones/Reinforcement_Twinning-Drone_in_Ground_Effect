@@ -21,6 +21,31 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
+\bibitem{Shakhatreh2019}
+H.~Shakhatreh, A.~H. Sawalmeh, A.~Al-Fuqaha, Z.~Dou, E.~Almaita, I.~Khalil,
+  N.~S. Othman, A.~Khreishah, and M.~Guizani, ``Unmanned aerial vehicles
+  ({UAVs}): A survey on civil applications and key research challenges,''
+  \emph{IEEE Access}, vol.~7, pp. 48\,572--48\,634, 2019.
+
+\bibitem{Ray2022}
+H.~Ray, R.~Singer, and N.~Ahmed, ``A review of the operational use of {UAS} in
+  public safety emergency incidents,'' in \emph{2022 International Conference
+  on Unmanned Aircraft Systems (ICUAS)}, 2022, pp. 922--931.
+
+\bibitem{Surmann2024}
+H.~Surmann, K.~Daun, M.~Schnaubelt, O.~von Stryk, M.~Patchou, S.~B\"ocker,
+  C.~Wietfeld, J.~Quenzel, D.~Schleich, S.~Behnke, R.~Grafe, N.~Heidemann,
+  D.~Slomma, and I.~Kruijff-Korbayov\'a, ``Lessons from robot-assisted disaster
+  response deployments by the german rescue robotics center task force,''
+  \emph{Journal of Field Robotics}, vol.~41, no.~3, pp. 782--797, 2024.
+
+\bibitem{Bartczak2025}
+E.~T. Bartczak, M.~Bassier, and M.~Vergauwen, ``Evaluation of a {UAS}-based
+  bridge inspection framework with automated damage candidate suggestion and
+  human-in-the-loop damage assessment,'' \emph{The International Archives of
+  the Photogrammetry, Remote Sensing and Spatial Information Sciences}, vol.
+  XLVIII-G-2025, pp. 189--196, 2025.
+
 \bibitem{EuropeanCommission2026}
 \BIBentryALTinterwordspacing
 {European Commission}, ``Action plan on drone and counter drone security,''
@@ -29,35 +54,55 @@
   \url{https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52026DC0081}
 \BIBentrySTDinterwordspacing
 
-\bibitem{Matus2020}
-A.~Matus-Vargas, G.~Rodriguez-Gomez, and J.~Martinez-Carranza, ``Ground effect
-  on rotorcraft unmanned aerial vehicles: A review,'' \emph{Intelligent Service
-  Robotics}, vol.~14, pp. 99--118, 2021.
+\bibitem{IMARC2026}
+\BIBentryALTinterwordspacing
+{IMARC Group}, ``Commercial drones market size, share, trends and forecast by
+  weight, system, product, mode of operation, application, end use, and region,
+  2026-2034,'' IMARC Group, Tech. Rep. SR112026A5846, 2026, accessed: Nov. 9,
+  2026. [Online]. Available:
+  \url{https://www.imarcgroup.com/commercial-drones-market}
+\BIBentrySTDinterwordspacing
+
+\bibitem{ZhangInspection2024}
+K.~Zhang, V.~Pakrashi, J.~Murphy, and G.~Hao, ``Inspection of floating offshore
+  wind turbines using multi-rotor unmanned aerial vehicles: Literature review
+  and trends,'' \emph{Sensors}, vol.~24, no.~3, p. 911, 2024.
+
+\bibitem{Elmeseiry2021}
+N.~Elmeseiry, N.~Alshaer, and T.~Ismail, ``A detailed survey and future
+  directions of unmanned aerial vehicles ({UAVs}) with potential
+  applications,'' \emph{Aerospace}, vol.~8, no.~12, p. 363, 2021.
+
+\bibitem{Floreano2015}
+D.~Floreano and R.~J. Wood, ``Science, technology and the future of small
+  autonomous drones,'' \emph{Nature}, vol. 521, no. 7553, pp. 460--466, 2015.
+
+\bibitem{ZhouSwarm2022}
+X.~Zhou, X.~Wen, Z.~Wang, Y.~Gao, H.~Li, Q.~Wang, T.~Yang, H.~Lu, Y.~Cao,
+  C.~Xu, and F.~Gao, ``Swarm of micro flying robots in the wild,''
+  \emph{Science Robotics}, vol.~7, no.~66, p. eabm5954, 2022.
 
 \bibitem{Carter2021}
 D.~J. Carter, L.~Bouchard, and D.~B. Quinn, ``Influence of the ground, ceiling,
   and sidewall on micro-quadrotors,'' \emph{AIAA Journal}, vol.~59, no.~4, pp.
   1398--1405, 2021.
 
-\bibitem{Franzetti2024}
-I.~David Du Mutel~de Pierrepont~Franzetti, R.~Parin, E.~Capello, M.~J.
-  Rutherford, and K.~P. Valavanis, ``Ground, ceiling and wall effect evaluation
-  of small quadcopters in pressure-controlled environments,'' \emph{Journal of
-  Intelligent \& Robotic Systems}, vol. 110, no.~3, p. 125, 2024.
+\bibitem{NeuralLander2019}
+G.~Shi, X.~Shi, M.~O'Connell, R.~Yu, K.~Azizzadenesheli, A.~Anandkumar, Y.~Yue,
+  and S.-J. Chung, ``{Neural Lander}: Stable drone landing control using
+  learned dynamics,'' in \emph{2019 International Conference on Robotics and
+  Automation (ICRA)}, 2019, pp. 9784--9790.
 
-\bibitem{Cai2024}
-J.~Cai and S.~Gunasekaran, ``Propeller ceiling effect in forward flight,''
-  \emph{Journal of Aircraft}, 2024.
+\bibitem{LeeSparseGE2025}
+J.~D. Lee, Y.~Kim, L.~Kim, N.~S. Zewge, and H.~Bang, ``Sparse online gaussian
+  process regression-based robust nonlinear dynamic inversion for multirotor
+  with forward flight ground effect,'' \emph{Aerospace Science and Technology},
+  vol. 162, p. 110195, 2025.
 
-\bibitem{Kan2019}
-X.~Kan, J.~Thomas, H.~Teng, H.~G. Tanner, V.~Kumar, and K.~Karydis, ``Analysis
-  of ground effect for small-scale {UAVs} in forward flight,'' \emph{IEEE
-  Robotics and Automation Letters}, vol.~4, no.~4, pp. 3860--3867, 2019.
-
-\bibitem{MPCReview2021}
-M.~Schwenzer, M.~Ay, T.~Bergs, and D.~Abel, ``Review on model predictive
-  control: An engineering perspective,'' \emph{The International Journal of
-  Advanced Manufacturing Technology}, vol. 117, pp. 1327--1349, 2021.
+\bibitem{NeuralFly2022}
+M.~O'Connell, G.~Shi, X.~Shi, K.~Azizzadenesheli, A.~Anandkumar, Y.~Yue, and
+  S.-J. Chung, ``{Neural-Fly} enables rapid learning for agile flight in strong
+  winds,'' \emph{Science Robotics}, vol.~7, no.~66, p. eabm6597, 2022.
 
 \bibitem{SchenaRT2023}
 L.~Schena, P.~A. Marques, R.~Poletti, S.~Ahizi, J.~Van~den Berghe, and M.~A.
@@ -71,20 +116,134 @@ M.~A. Mendez, L.~Schena, R.~Poletti, Y.~Lecomte, S.~Randino, and J.~Van~den
   and replay-driven identification,'' 2026, manuscript submitted to Proceedings
   of the Royal Society A.
 
-\bibitem{PolettiRT2025}
-R.~Poletti, L.~Schena, L.~Koloszar, J.~Degroote, and M.~A. Mendez,
-  ``Reinforcement twinning for hybrid control of flapping-wing drones,''
-  \emph{arXiv preprint arXiv:2505.18201}, 2025.
+\bibitem{Bauersfeld2026}
+\BIBentryALTinterwordspacing
+L.~Bauersfeld and D.~Scaramuzza, ``Low-latency event-based velocimetry for
+  quadrotor control in a narrow pipe,'' \emph{IEEE Transactions on Robotics},
+  2026, accepted for publication. [Online]. Available:
+  \url{https://arxiv.org/abs/2507.15444}
+\BIBentrySTDinterwordspacing
 
-\bibitem{Korenhof2021}
-P.~Korenhof, V.~Blok, and S.~Kloppenburg, ``Steering representations---towards
-  a critical understanding of digital twins,'' \emph{Philosophy \& Technology},
-  vol.~34, pp. 1751--1773, 2021.
+\bibitem{Franzetti2024}
+I.~David Du Mutel~de Pierrepont~Franzetti, R.~Parin, E.~Capello, M.~J.
+  Rutherford, and K.~P. Valavanis, ``Ground, ceiling and wall effect evaluation
+  of small quadcopters in pressure-controlled environments,'' \emph{Journal of
+  Intelligent \& Robotic Systems}, vol. 110, no.~3, p. 125, 2024.
 
-\bibitem{Wagg2025}
-D.~J. Wagg, C.~Burr, J.~Shepherd, Z.~Xuereb~Conti, M.~Enzer, and S.~Niederer,
-  ``The philosophical foundations of digital twinning,'' \emph{Data-Centric
-  Engineering}, vol.~6, p. e12, 2025.
+\bibitem{Cai2024}
+J.~Cai and S.~Gunasekaran, ``Propeller ceiling effect in forward flight,''
+  \emph{Journal of Aircraft}, 2024.
+
+\bibitem{CheesemanBennett1955}
+I.~C. Cheeseman and W.~E. Bennett, ``The effect of ground on a helicopter rotor
+  in forward flight,'' Aeronautical Research Council, London, U.K., R\&M 3021,
+  1955.
+
+\bibitem{SanchezCuevas2017}
+P.~S\'anchez-Cuevas, G.~Heredia, and A.~Ollero, ``Characterization of the
+  aerodynamic ground effect and its influence in multirotor control,''
+  \emph{International Journal of Aerospace Engineering}, vol. 2017, 2017,
+  article ID 1823056.
+
+\bibitem{Kan2019}
+X.~Kan, J.~Thomas, H.~Teng, H.~G. Tanner, V.~Kumar, and K.~Karydis, ``Analysis
+  of ground effect for small-scale {UAVs} in forward flight,'' \emph{IEEE
+  Robotics and Automation Letters}, vol.~4, no.~4, pp. 3860--3867, 2019.
+
+\bibitem{Gennaretti2017}
+M.~Gennaretti, R.~Celi, C.~Pasquali, F.~Cardito, J.~Serafini, and
+  G.~Bernardini, ``Dynamic wake inflow modeling in ground effect for flight
+  dynamics applications,'' in \emph{Proceedings of the 73rd AHS Annual Forum
+  and Technology Display}, Fort Worth, TX, USA, 2017.
+
+\bibitem{Pasquali2023}
+C.~Pasquali, M.~Gennaretti, G.~Bernardini, and J.~Serafini, ``State-space
+  dynamic inflow modelling for hovering rotors in fixed- and moving-ground
+  effect,'' \emph{Aerospace Science and Technology}, vol. 140, p. 108414, 2023.
+
+\bibitem{Quan2017}
+Q.~Quan, \emph{Introduction to Multicopter Design and Control}.\hskip 1em plus
+  0.5em minus 0.4em\relax Singapore: Springer, 2017.
+
+\bibitem{Borrelli2017}
+F.~Borrelli, A.~Bemporad, and M.~Morari, \emph{Predictive Control for Linear
+  and Hybrid Systems}.\hskip 1em plus 0.5em minus 0.4em\relax Cambridge, U.K.:
+  Cambridge University Press, 2017.
+
+\bibitem{YangGE2025}
+T.~Yang, K.~Chai, J.~Ji, Y.~Wu, C.~Xu, and F.~Gao, ``Ground-effect-aware
+  modeling and control for multicopters,'' \emph{arXiv preprint
+  arXiv:2506.19424}, 2025.
+
+\bibitem{HeDynamicGE2024}
+B.~He, H.~Zhang, B.~Lai, S.~Liu, and Y.~Wang, ``Data-driven modeling of ground
+  effect for {UAV} landing on a vertical oscillating platform,'' in \emph{2024
+  IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  2024, pp. 8169--8174.
+
+\bibitem{MPCReview2021}
+M.~Schwenzer, M.~Ay, T.~Bergs, and D.~Abel, ``Review on model predictive
+  control: An engineering perspective,'' \emph{The International Journal of
+  Advanced Manufacturing Technology}, vol. 117, pp. 1327--1349, 2021.
+
+\bibitem{XuGE2022}
+G.~Xu, Z.~Sun, H.~Liu, Y.~Zhou, X.~Gong, and S.~Gong, ``Identification of
+  ground effect and intelligent control of unmanned aerial vehicles,''
+  \emph{Aerospace Science and Technology}, vol. 131, p. 107976, 2022.
+
+\bibitem{NeuralSwarm2022}
+G.~Shi, W.~H\"onig, X.~Shi, Y.~Yue, and S.-J. Chung, ``{Neural-Swarm2}:
+  Planning and control of heterogeneous multirotor swarms using learned
+  interactions,'' \emph{IEEE Transactions on Robotics}, vol.~38, no.~2, pp.
+  1063--1079, 2022.
+
+\bibitem{Sutton1991}
+R.~S. Sutton, ``Dyna, an integrated architecture for learning, planning, and
+  reacting,'' \emph{ACM SIGART Bulletin}, vol.~2, no.~4, pp. 160--163, 1991.
+
+\bibitem{Deisenroth2011}
+\BIBentryALTinterwordspacing
+M.~P. Deisenroth and C.~E. Rasmussen, ``{PILCO}: A model-based and
+  data-efficient approach to policy search,'' in \emph{Proceedings of the 28th
+  International Conference on Machine Learning}, 2011, pp. 465--472. [Online].
+  Available: \url{https://www.deisenroth.cc/publication/deisenroth-2011-c/}
+\BIBentrySTDinterwordspacing
+
+\bibitem{Nagabandi2018}
+A.~Nagabandi, G.~Kahn, R.~S. Fearing, and S.~Levine, ``Neural network dynamics
+  for model-based deep reinforcement learning with model-free fine-tuning,'' in
+  \emph{2018 IEEE International Conference on Robotics and Automation (ICRA)},
+  2018, pp. 7559--7566.
+
+\bibitem{Johannink2019}
+T.~Johannink, S.~Bahl, A.~Nair, J.~Luo, A.~Kumar, M.~Loskyll, J.~Aparicio~Ojea,
+  E.~Solowjow, and S.~Levine, ``Residual reinforcement learning for robot
+  control,'' in \emph{2019 International Conference on Robotics and Automation
+  (ICRA)}, 2019, pp. 6023--6029.
+
+\bibitem{ProxFly2025}
+R.~Zhang, D.~Zhang, and M.~W. Mueller, ``{ProxFly}: Robust control for close
+  proximity quadcopter flight via residual reinforcement learning,'' in
+  \emph{2025 IEEE International Conference on Robotics and Automation (ICRA)},
+  2025.
+
+\bibitem{Astrom1973}
+K.~J. \AA~str\"om and B.~Wittenmark, ``On self-tuning regulators,''
+  \emph{Automatica}, vol.~9, no.~2, pp. 185--199, 1973.
+
+\bibitem{Mehra1974}
+R.~K. Mehra, ``Optimal input signals for parameter estimation in dynamic
+  systems---survey and new results,'' \emph{IEEE Transactions on Automatic
+  Control}, vol.~19, no.~6, pp. 753--768, 1974.
+
+\bibitem{Goodwin1977}
+G.~C. Goodwin and R.~L. Payne, \emph{Dynamic System Identification: Experiment
+  Design and Data Analysis}.\hskip 1em plus 0.5em minus 0.4em\relax Academic
+  Press, 1977.
+
+\bibitem{Hjalmarsson2005}
+H.~Hjalmarsson, ``From experiment design to closed-loop control,''
+  \emph{Automatica}, vol.~41, no.~3, pp. 393--438, 2005.
 
 \bibitem{Feldbaum1960}
 A.~A. Feldbaum, ``Dual control theory,'' \emph{Automation and Remote Control},
@@ -100,39 +259,65 @@ A.~Mesbah, ``Stochastic model predictive control with active uncertainty
   learning: A survey on dual control,'' \emph{Annual Reviews in Control},
   vol.~45, pp. 107--117, 2018.
 
-\bibitem{Kennedy2001}
-M.~C. Kennedy and A.~O'Hagan, ``Bayesian calibration of computer models,''
-  \emph{Journal of the Royal Statistical Society: Series B}, vol.~63, no.~3,
-  pp. 425--464, 2001.
-
-\bibitem{Rasmussen2006}
-C.~E. Rasmussen and C.~K.~I. Williams, \emph{Gaussian Processes for Machine
-  Learning}.\hskip 1em plus 0.5em minus 0.4em\relax MIT Press, 2006.
-
 \bibitem{Mockus1975}
 J.~Mockus, ``On bayesian methods for seeking the extremum,'' in
   \emph{Optimization Techniques IFIP Technical Conference}.\hskip 1em plus
   0.5em minus 0.4em\relax Springer, 1975, pp. 400--404.
+
+\bibitem{Jones1998}
+D.~R. Jones, M.~Schonlau, and W.~J. Welch, ``Efficient global optimization of
+  expensive black-box functions,'' \emph{Journal of Global Optimization},
+  vol.~13, no.~4, pp. 455--492, 1998.
+
+\bibitem{Rai2019}
+\BIBentryALTinterwordspacing
+A.~Rai, R.~Antonova, F.~Meier, and C.~G. Atkeson, ``Using simulation to improve
+  sample-efficiency of bayesian optimization for bipedal robots,''
+  \emph{Journal of Machine Learning Research}, vol.~20, no.~49, pp. 1--24,
+  2019. [Online]. Available: \url{https://jmlr.org/papers/v20/18-196.html}
+\BIBentrySTDinterwordspacing
+
+\bibitem{Nobar2025}
+M.~Nobar, J.~Keller, A.~Rupenyan, M.~Khosravi, and J.~Lygeros, ``Guided
+  bayesian optimization: Data-efficient controller tuning with digital twin,''
+  \emph{IEEE Transactions on Automation Science and Engineering}, vol.~22, pp.
+  11\,304--11\,317, 2025.
+
+\bibitem{Nobar2026}
+M.~Nobar, J.~Keller, A.~Forino, J.~Lygeros, and A.~Rupenyan, ``Guided
+  multi-fidelity bayesian optimization for data-driven controller tuning with
+  digital twins,'' \emph{IEEE Robotics and Automation Letters}, vol.~11, no.~5,
+  pp. 5294--5301, 2026.
+
+\bibitem{Kennedy2001}
+M.~C. Kennedy and A.~O'Hagan, ``Bayesian calibration of computer models,''
+  \emph{Journal of the Royal Statistical Society: Series B}, vol.~63, no.~3,
+  pp. 425--464, 2001.
 
 \bibitem{Forrester2007}
 A.~I.~J. Forrester, A.~Sobester, and A.~J. Keane, ``Multi-fidelity optimization
   via surrogate modelling,'' \emph{Proceedings of the Royal Society A}, vol.
   463, pp. 3251--3269, 2007.
 
+\bibitem{Korenhof2021}
+P.~Korenhof, V.~Blok, and S.~Kloppenburg, ``Steering representations---towards
+  a critical understanding of digital twins,'' \emph{Philosophy \& Technology},
+  vol.~34, pp. 1751--1773, 2021.
+
+\bibitem{Wagg2025}
+D.~J. Wagg, C.~Burr, J.~Shepherd, Z.~Xuereb~Conti, M.~Enzer, and S.~Niederer,
+  ``The philosophical foundations of digital twinning,'' \emph{Data-Centric
+  Engineering}, vol.~6, p. e12, 2025.
+
+\bibitem{PolettiRT2025}
+R.~Poletti, L.~Schena, L.~Koloszar, J.~Degroote, and M.~A. Mendez,
+  ``Reinforcement twinning for hybrid control of flapping-wing drones,''
+  \emph{arXiv preprint arXiv:2505.18201}, 2025.
+
 \bibitem{Richardson2025}
 L.~Richardson and A.~Pretorius, ``Development of a high-fidelity simulation
   environment for a {Crazyflie 2.1} quadcopter,'' in \emph{MATEC Web of
   Conferences}, vol. 417, 2025, p. 04007.
-
-\bibitem{Mehra1974}
-R.~K. Mehra, ``Optimal input signals for parameter estimation in dynamic
-  systems---survey and new results,'' \emph{IEEE Transactions on Automatic
-  Control}, vol.~19, no.~6, pp. 753--768, 1974.
-
-\bibitem{Goodwin1977}
-G.~C. Goodwin and R.~L. Payne, \emph{Dynamic System Identification: Experiment
-  Design and Data Analysis}.\hskip 1em plus 0.5em minus 0.4em\relax Academic
-  Press, 1977.
 
 \bibitem{Taffanel2021Lighthouse}
 A.~Taffanel, B.~Rousselot, J.~Danielsson, K.~McGuire, K.~Richardsson,
@@ -152,10 +337,5 @@ A.~Taffanel, B.~Rousselot, J.~Danielsson, K.~McGuire, K.~Richardsson,
 ------, ``Crazyflie firmware,'' GitHub repository, accessed: Oct. 23, 2026.
   [Online]. Available: \url{https://github.com/bitcraze/crazyflie-firmware}
 \BIBentrySTDinterwordspacing
-
-\bibitem{CheesemanBennett1955}
-I.~C. Cheeseman and W.~E. Bennett, ``The effect of ground on a helicopter rotor
-  in forward flight,'' Aeronautical Research Council, London, U.K., R\&M 3021,
-  1955.
 
 \end{thebibliography}
